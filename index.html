@@ -403,6 +403,19 @@
       background: var(--summary-surface);
     }
 
+    .disclaimer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      background: var(--summary-surface);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .disclaimer strong {
+      color: var(--ink);
+    }
+
     details {
       border-top: 1px solid var(--line);
       padding: 12px 16px;
@@ -685,6 +698,9 @@
           <p>In estimate mode, Miner Wars electricity and service are charged only against reward-equivalent TH from blocks won. The solo-equivalent reward portion uses your listed W/TH, and reward above estimated Mining Mode uses the league weighted average W/TH. The solo baseline still uses full-week mining-mode costs for the selected cycle power. In actual mode, the Miner Wars electricity and service inputs are used directly and scaled only when current-to-date mode is active.</p>
           <p>Estimated solo net is floored at zero. Ratio outputs are hidden when solo net is zero because a ratio against zero is nonsense wearing a tiny hat.</p>
         </details>
+        <div class="disclaimer">
+          <strong>Disclaimer:</strong> This calculator is an estimate for planning and comparison only. Miner Wars rewards, electricity, service, token prices, difficulty, and leaderboard data can change; verify final values in GoMining before making decisions. This is not financial advice.
+        </div>
       </section>
 
       <section>
