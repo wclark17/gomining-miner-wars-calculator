@@ -1,0 +1,1366 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GoMining Miner Wars Calculator</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7f4;
+      --surface: #ffffff;
+      --surface-2: #edf3f0;
+      --field: #ffffff;
+      --ink: #17211d;
+      --muted: #61706a;
+      --line: #d5ddd8;
+      --control-line: #c6d1cb;
+      --green: #0f7b4f;
+      --blue: #265f91;
+      --red: #b2382f;
+      --amber: #9a6514;
+      --shadow: 0 12px 28px rgba(18, 31, 27, .08);
+      --focus: rgba(38, 95, 145, .14);
+      --primary-ink: #ffffff;
+      --button-surface: #ffffff;
+      --summary-surface: #fbfcfb;
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #101613;
+      --surface: #18211d;
+      --surface-2: #1f2b26;
+      --field: #121a16;
+      --ink: #edf5f0;
+      --muted: #9aaba3;
+      --line: #314139;
+      --control-line: #41564c;
+      --green: #4fc084;
+      --blue: #7bb8f0;
+      --red: #ff8379;
+      --amber: #e0ac5c;
+      --shadow: 0 16px 34px rgba(0, 0, 0, .28);
+      --focus: rgba(123, 184, 240, .2);
+      --primary-ink: #07110d;
+      --button-surface: #1b2621;
+      --summary-surface: #141c18;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 22px;
+    }
+
+    header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 12px 0 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.1;
+      font-weight: 760;
+      letter-spacing: 0;
+    }
+
+    .subtle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      max-width: 720px;
+    }
+
+    .cycle-box {
+      min-width: 310px;
+      padding: 12px 14px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: 8px;
+    }
+
+    .cycle-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 3px 0;
+      color: var(--muted);
+    }
+
+    .cycle-row strong {
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .countdown {
+      color: var(--blue);
+      font-size: 22px;
+      font-weight: 760;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-top: 18px;
+      align-items: start;
+    }
+
+    section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    section h2 {
+      margin: 0;
+      padding: 14px 16px;
+      font-size: 16px;
+      line-height: 1.2;
+      letter-spacing: 0;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface-2);
+    }
+
+    .fields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .field-group {
+      grid-column: 1 / -1;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--summary-surface);
+    }
+
+    .field-group h3 {
+      margin: 0 0 10px;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .group-fields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .switch-strip .group-fields {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .selector-strip .group-fields {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      align-items: end;
+    }
+
+    .field {
+      min-width: 0;
+    }
+
+    .field.autofilled label::after {
+      content: "Autofilled";
+      display: inline-block;
+      margin-left: 8px;
+      padding: 1px 6px 2px;
+      border: 1px solid color-mix(in srgb, var(--blue) 42%, transparent);
+      border-radius: 999px;
+      color: var(--blue);
+      background: color-mix(in srgb, var(--blue) 10%, transparent);
+      font-size: 11px;
+      font-weight: 760;
+      vertical-align: 1px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    input, select {
+      width: 100%;
+      height: 40px;
+      padding: 8px 10px;
+      border: 1px solid var(--control-line);
+      border-radius: 6px;
+      background: var(--field);
+      color: var(--ink);
+      font: inherit;
+      font-variant-numeric: tabular-nums;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--blue);
+      outline: 3px solid var(--focus);
+    }
+
+    .field.autofilled input,
+    .field.autofilled select {
+      border-color: var(--blue);
+      background: color-mix(in srgb, var(--blue) 9%, var(--field));
+    }
+
+    .wide { grid-column: 1 / -1; }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+      border: 1px solid var(--control-line);
+      border-radius: 6px;
+      overflow: hidden;
+      height: 40px;
+      background: var(--field);
+    }
+
+    .segmented.switch {
+      position: relative;
+      gap: 0;
+      padding: 3px;
+      border-radius: 999px;
+      background: var(--surface-2);
+    }
+
+    .segmented.switch::before {
+      content: "";
+      position: absolute;
+      inset: 3px auto 3px 3px;
+      width: calc(50% - 3px);
+      border-radius: 999px;
+      background: var(--blue);
+      transition: transform .16s ease;
+      z-index: 0;
+    }
+
+    .segmented.switch.is-second::before {
+      transform: translateX(100%);
+    }
+
+    .segmented button {
+      position: relative;
+      z-index: 1;
+      border: 0;
+      background: var(--field);
+      color: var(--muted);
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    .segmented.switch button {
+      border-radius: 999px;
+      background: transparent;
+    }
+
+    .segmented button.active {
+      color: var(--primary-ink);
+    }
+
+    .segmented:not(.switch) button.active {
+      background: var(--blue);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 0 16px 16px;
+    }
+
+    button.action {
+      height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--control-line);
+      border-radius: 6px;
+      background: var(--button-surface);
+      color: var(--ink);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.primary {
+      border-color: var(--green);
+      background: var(--green);
+      color: var(--primary-ink);
+    }
+
+    button.inline-action {
+      width: 100%;
+      height: 40px;
+    }
+
+    .live-status {
+      width: 100%;
+      margin: -4px 16px 16px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .results {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .result-column {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--summary-surface);
+    }
+
+    .result-column h3,
+    .comparison-row h3 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .comparison-row {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--summary-surface);
+    }
+
+    .comparison-row h3 {
+      grid-column: 1 / -1;
+    }
+
+    .metric {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--field);
+    }
+
+    .metric .label {
+      color: var(--muted);
+      font-weight: 650;
+    }
+
+    .metric .value {
+      font-size: 20px;
+      font-weight: 760;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+
+    .metric.good .value { color: var(--green); }
+    .metric.bad .value { color: var(--red); }
+    .metric.warn .value { color: var(--amber); }
+
+    .summary {
+      padding: 14px 16px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      background: var(--summary-surface);
+    }
+
+    details {
+      border-top: 1px solid var(--line);
+      padding: 12px 16px;
+      color: var(--muted);
+    }
+
+    summary {
+      cursor: pointer;
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .92em;
+    }
+
+    .top-tools {
+      display: grid;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .help-link,
+    .theme-toggle {
+      justify-self: end;
+      height: 34px;
+      padding: 0 10px;
+      border: 1px solid var(--control-line);
+      border-radius: 6px;
+      background: var(--button-surface);
+      color: var(--ink);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .help-link {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    label[title],
+    input[title],
+    select[title],
+    button[title] {
+      cursor: help;
+    }
+
+    @media (max-width: 880px) {
+      main { padding: 14px; }
+      header { display: block; }
+      .top-tools { margin-top: 14px; }
+      .nav-links { justify-content: stretch; }
+      .help-link,
+      .theme-toggle { justify-content: center; flex: 1 1 140px; }
+      .cycle-box { min-width: 0; }
+      .layout { grid-template-columns: 1fr; }
+      .fields { grid-template-columns: 1fr; }
+      .group-fields,
+      .switch-strip .group-fields,
+      .selector-strip .group-fields,
+      .results,
+      .comparison-row { grid-template-columns: 1fr; }
+      .metric { grid-template-columns: 1fr; }
+      .metric .value { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>Miner Wars Weekly Calculator</h1>
+        <p class="subtle">Estimate Miner Wars vs solo mining for the current Tuesday-to-Tuesday UTC cycle.</p>
+      </div>
+      <div class="top-tools">
+        <div class="nav-links">
+          <a class="help-link" href="gomining-miner-wars-help.html">Help</a>
+          <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">Dark mode</button>
+        </div>
+        <div class="cycle-box" aria-live="polite">
+          <div class="cycle-row"><span>Cycle ends</span><strong id="cycleEnd">-</strong></div>
+          <div class="cycle-row"><span>Elapsed</span><strong id="elapsedText">-</strong></div>
+          <div class="countdown" id="countdown">-</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section>
+        <h2>Inputs</h2>
+        <div class="fields">
+          <div class="field-group switch-strip">
+            <h3>Setup</h3>
+            <div class="group-fields">
+              <div class="field">
+                <label>Entered values represent</label>
+                <div class="segmented switch" id="modeSwitch" role="group" aria-label="Input mode">
+                  <button type="button" id="modeToDate" class="active">Current to date</button>
+                  <button type="button" id="modeFull">Full week</button>
+                </div>
+              </div>
+              <div class="field">
+                <label>Cost source</label>
+                <div class="segmented switch" id="costSwitch" role="group" aria-label="Cost mode">
+                  <button type="button" id="costEstimate" class="active">Estimate mid-week</button>
+                  <button type="button" id="costActual">Use actual costs</button>
+                </div>
+              </div>
+              <div class="field">
+                <label>BTC reward source</label>
+                <div class="segmented switch" id="rewardSwitch" role="group" aria-label="BTC reward source">
+                  <button type="button" id="rewardEstimate" class="active">Estimate from blocks</button>
+                  <button type="button" id="rewardActual">Use actual BTC</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group selector-strip">
+            <h3>League And Searches</h3>
+            <div class="group-fields">
+              <div class="field">
+                <label for="leagueId">Miner Wars league</label>
+                <select id="leagueId"></select>
+              </div>
+              <div class="field">
+                <label for="clanSearch">Clan search</label>
+                <input id="clanSearch" type="text" placeholder="optional">
+              </div>
+              <div class="field">
+                <label for="playerSearch">Player alias search</label>
+                <input id="playerSearch" type="text" placeholder="optional">
+              </div>
+              <div class="field">
+                <label>&nbsp;</label>
+                <button class="action primary inline-action" id="fetchLeagueData" type="button">Autofill league data</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <h3>Market Prices</h3>
+            <div class="group-fields">
+              <div class="field">
+                <label for="btcUsd">BTC price USD</label>
+                <input id="btcUsd" type="number" step="0.01" value="69923.65">
+              </div>
+              <div class="field">
+                <label for="gmtUsd">GMT price USD</label>
+                <input id="gmtUsd" type="number" step="0.0001" value="0">
+              </div>
+              <div class="field">
+                <label for="satsThDay">Network sats / TH / day</label>
+                <input id="satsThDay" type="number" step="1" value="46">
+              </div>
+              <div class="field">
+                <label for="cycleElapsed">Elapsed days override</label>
+                <input id="cycleElapsed" type="number" step="0.01" placeholder="auto">
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <h3>Clan BTC Rewards</h3>
+            <div class="group-fields">
+              <div class="field">
+                <label for="clanBlocksWon">Clan blocks won</label>
+                <input id="clanBlocksWon" type="number" step="1" value="35">
+              </div>
+              <div class="field">
+                <label for="btcBlockSize">BTC block size</label>
+                <input id="btcBlockSize" type="number" step="0.00000001" value="3.125">
+              </div>
+              <div class="field">
+                <label for="clanSharePct">My % of clan TH</label>
+                <input id="clanSharePct" type="number" step="0.0001" value="0.00744">
+              </div>
+              <div class="field">
+                <label for="myClanTh">My TH in clan</label>
+                <input id="myClanTh" type="number" step="0.0001" placeholder="optional">
+              </div>
+              <div class="field">
+                <label for="totalClanTh">Clan total TH</label>
+                <input id="totalClanTh" type="number" step="0.0001" placeholder="optional">
+              </div>
+              <div class="field">
+                <label for="rewardBtc">Actual MW reward BTC</label>
+                <input id="rewardBtc" type="number" step="0.00000001" value="0.00813211">
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <h3>Personal GMT Rewards</h3>
+            <div class="group-fields">
+              <div class="field">
+                <label for="personalBlocksWon">Personal blocks won</label>
+                <input id="personalBlocksWon" type="number" step="1" value="0">
+              </div>
+              <div class="field">
+                <label for="gmtBlockSize">GMT block size</label>
+                <input id="gmtBlockSize" type="number" step="0.0001" value="0">
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <h3>Costs And Spells</h3>
+            <div class="group-fields">
+              <div class="field">
+                <label for="powerTh">Cycle power TH</label>
+                <input id="powerTh" type="number" step="0.0001" value="3023.9142">
+              </div>
+              <div class="field">
+                <label for="listedWth">Your listed W/TH</label>
+                <input id="listedWth" type="number" step="0.01" value="15">
+              </div>
+              <div class="field">
+                <label for="leagueWth">League avg W/TH for excess</label>
+                <input id="leagueWth" type="number" step="0.01" value="18">
+              </div>
+              <div class="field">
+                <label for="kwhUsd">Electricity $/kWh</label>
+                <input id="kwhUsd" type="number" step="0.0001" value="0.05">
+              </div>
+              <div class="field">
+                <label for="maintenanceDiscountPct">Maintenance discount %</label>
+                <input id="maintenanceDiscountPct" type="number" step="0.01" value="7.8">
+              </div>
+              <div class="field">
+                <label for="serviceUsdThDay">Service $ / TH / day</label>
+                <input id="serviceUsdThDay" type="number" step="0.0001" value="0.0089">
+              </div>
+              <div class="field">
+                <label for="electricityUsd">Electricity cost USD</label>
+                <input id="electricityUsd" type="number" step="0.01" value="344.26">
+              </div>
+              <div class="field">
+                <label for="serviceUsd">Service cost USD</label>
+                <input id="serviceUsd" type="number" step="0.01" value="146.78">
+              </div>
+              <div class="field">
+                <label for="spellUsd">Spell allowance GMT</label>
+                <input id="spellUsd" type="number" step="0.0001" value="0">
+              </div>
+              <div class="field">
+                <label for="spellPeriod">Spell allowance period</label>
+                <select id="spellPeriod">
+                  <option value="week" selected>Per week</option>
+                  <option value="day">Per day</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="action primary" id="recalculate" type="button">Recalculate</button>
+          <button class="action" id="fetchMarketPrices" type="button">Fetch market prices</button>
+          <button class="action" id="fetchDifficulty" type="button">Fetch difficulty estimate</button>
+          <button class="action" id="loadLatest" type="button">Load latest sheet example</button>
+          <div class="live-status" id="liveStatus" aria-live="polite"></div>
+        </div>
+        <details>
+          <summary>Assumptions</summary>
+          <p>Cycle boundaries are Tuesday 00:00 UTC to Tuesday 00:00 UTC. Solo BTC uses network-derived sats/TH/day, so it excludes transaction fees, pool luck, and GoMining-specific accounting adjustments.</p>
+          <p>Autofill uses public GoMining Miner Wars leaderboard data when the browser or hosting proxy allows the request. It can fill league block sizes and weighted average W/TH automatically; clan and player block wins need matching search text.</p>
+          <p>Autofilled fields are marked until you manually edit them, so it is obvious when live or snapshot data replaced your entered value.</p>
+          <p>In block-estimate mode, BTC reward is clan blocks won times BTC block size times your clan TH share. If My TH and Clan total TH are entered, that ratio is used; otherwise the percentage field is used. Personal GMT rewards are personal blocks won times GMT block size. Current-to-date mode extrapolates block wins to a full cycle based on elapsed time. Block-estimated rewards are treated as before costs by default.</p>
+          <p>In estimate mode, Miner Wars electricity and service are charged only against reward-equivalent TH from blocks won. The solo-equivalent reward portion uses your listed W/TH, and reward above estimated Mining Mode uses the league weighted average W/TH. The solo baseline still uses full-week mining-mode costs for the selected cycle power. In actual mode, the Miner Wars electricity and service inputs are used directly and scaled only when current-to-date mode is active.</p>
+          <p>Estimated solo net is floored at zero. Ratio outputs are hidden when solo net is zero because a ratio against zero is nonsense wearing a tiny hat.</p>
+        </details>
+      </section>
+
+      <section>
+        <h2>Estimate</h2>
+        <div class="results" id="results"></div>
+        <div class="summary" id="summaryText"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="config.js"></script>
+  <script>
+    const MS_DAY = 24 * 60 * 60 * 1000;
+    const GOMINING_API = "https://api.gomining.com/api/nft-game";
+    const SNAPSHOT_API = window.MINER_WARS_SNAPSHOT_API || "";
+    const COINGECKO_PRICE_API = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,gmt-token&vs_currencies=usd&include_last_updated_at=true";
+    const LEAGUES = [
+      ["Odyssey", 1],
+      ["Eclipse", 2],
+      ["Horizon", 3],
+      ...Array.from({ length: 26 }, (_, index) => [`Dune ${toRoman(index + 1)}`, index + 5])
+    ];
+    const ids = [
+      "leagueId", "clanSearch", "playerSearch",
+      "powerTh", "listedWth", "leagueWth", "kwhUsd", "maintenanceDiscountPct", "serviceUsdThDay",
+      "btcUsd", "satsThDay", "cycleElapsed",
+      "clanBlocksWon", "btcBlockSize", "clanSharePct", "myClanTh", "totalClanTh", "rewardBtc",
+      "personalBlocksWon", "gmtBlockSize", "gmtUsd",
+      "electricityUsd", "serviceUsd", "spellUsd", "spellPeriod"
+    ];
+    let inputMode = "todate";
+    let costMode = "estimate";
+    let rewardMode = "estimate";
+    let theme = localStorage.getItem("mwCalculatorTheme") || "light";
+    const tooltips = {
+      modeToDate: "Use this while the cycle is still running. Inputs such as block wins and actual costs are scaled to a full week using elapsed cycle time.",
+      modeFull: "Use this when the values already represent the full Tuesday-to-Tuesday cycle.",
+      costEstimate: "Estimate electricity and service from the public formula inputs.",
+      costActual: "Use actual electricity and service values after the cycle is complete or when you have them from the app.",
+      rewardEstimate: "Estimate BTC reward from clan block wins, BTC block size, and your share of clan TH.",
+      rewardActual: "Use an actual BTC reward value instead of the block estimate.",
+      leagueId: "League to pull public Miner Wars leaderboard values from. Dune numbering uses roman numerals.",
+      clanSearch: "Optional text to match a clan name. When matched, autofill sets clan blocks won and clan total TH.",
+      playerSearch: "Optional text to match a player alias. When matched, autofill sets personal blocks won and player TH.",
+      powerTh: "Your Miner Wars cycle power in terahashes.",
+      listedWth: "Your miner energy efficiency in watts per terahash. Lower is better.",
+      leagueWth: "Weighted average league efficiency used for reward above the solo-mining equivalent.",
+      kwhUsd: "Electricity price in USD per kWh. GoMining examples use 0.05, while docs describe a billing-period average range.",
+      maintenanceDiscountPct: "Maintenance discount applied to estimated electricity and service costs.",
+      serviceUsdThDay: "Service charge in USD per TH per day.",
+      btcUsd: "BTC/USD price used to convert BTC rewards and solo estimates to dollars.",
+      satsThDay: "Estimated BTC mining reward in whole sats per TH per day for the solo-mining baseline.",
+      cycleElapsed: "Optional manual elapsed-day override. Leave blank to use the live Tuesday UTC cycle clock.",
+      clanBlocksWon: "Number of clan BTC blocks won so far or for the full week, depending on input mode.",
+      btcBlockSize: "BTC reward size for each clan block.",
+      clanSharePct: "Your percentage of total clan TH. Used when My TH and Clan total TH are blank.",
+      myClanTh: "Optional: your TH in the clan. Enter with Clan total TH to calculate your share automatically.",
+      totalClanTh: "Optional: total clan TH. Enter with My TH to calculate your share automatically.",
+      rewardBtc: "Actual BTC reward to use when the reward source is set to Use actual BTC.",
+      personalBlocksWon: "Number of personal GMT blocks won so far or for the full week, depending on input mode.",
+      gmtBlockSize: "GMT reward size for each personal block.",
+      gmtUsd: "Optional GMT/USD price used to include personal GMT rewards in dollar comparisons.",
+      electricityUsd: "Actual electricity cost in USD. Used only when cost source is Use actual costs.",
+      serviceUsd: "Actual service cost in USD. Used only when cost source is Use actual costs.",
+      spellUsd: "Estimated spell purchase allowance in GMT. Converted to USD with the GMT price field.",
+      spellPeriod: "Whether the spell allowance is entered as a weekly GMT total or a per-day GMT budget.",
+      recalculate: "Recalculate immediately from the current inputs.",
+      fetchLeagueData: "Pull public Miner Wars leaderboard values for the selected league.",
+      fetchMarketPrices: "Fetch current BTC/USD and GMT/USD prices from CoinGecko.",
+      fetchDifficulty: "Fetch a network difficulty estimate and convert it into an approximate sats per TH per day value.",
+      loadLatest: "Load the last saved example values for comparison.",
+      themeToggle: "Switch between light and dark mode."
+    };
+
+    function $(id) {
+      return document.getElementById(id);
+    }
+
+    function toRoman(value) {
+      const table = [
+        [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]
+      ];
+      let remaining = value;
+      let result = "";
+      for (const [number, symbol] of table) {
+        while (remaining >= number) {
+          result += symbol;
+          remaining -= number;
+        }
+      }
+      return result;
+    }
+
+    function setLiveStatus(message, tone = "") {
+      const status = $("liveStatus");
+      status.textContent = message || "";
+      status.style.color = tone === "bad" ? "var(--red)" : tone === "good" ? "var(--green)" : "var(--muted)";
+    }
+
+    function populateLeagueOptions() {
+      $("leagueId").innerHTML = LEAGUES.map(([name, id]) => `<option value="${id}">${name}</option>`).join("");
+      $("leagueId").value = "19";
+    }
+
+    function applyTooltips() {
+      Object.entries(tooltips).forEach(([id, text]) => {
+        const control = $(id);
+        if (!control) return;
+        control.title = text;
+        control.setAttribute("aria-label", control.getAttribute("aria-label") || text);
+        const label = document.querySelector(`label[for="${id}"]`);
+        if (label) label.title = text;
+      });
+    }
+
+    function numberValue(id, fallback = 0) {
+      const value = parseFloat($(id).value);
+      return Number.isFinite(value) ? value : fallback;
+    }
+
+    function markAutofilled(id, marked = true) {
+      $(id).closest(".field")?.classList.toggle("autofilled", marked);
+    }
+
+    function clearAutofillMarks() {
+      ids.forEach(id => markAutofilled(id, false));
+    }
+
+    function setAutofilledValue(id, value) {
+      $(id).value = value;
+      markAutofilled(id, true);
+    }
+
+    function updateClanShareFromTh(mark = false) {
+      const myClanTh = numberValue("myClanTh", 0);
+      const totalClanTh = numberValue("totalClanTh", 0);
+      if (!(myClanTh > 0 && totalClanTh > 0)) return;
+      const sharePct = (myClanTh / totalClanTh) * 100;
+      const value = sharePct < 0.01 ? sharePct.toFixed(6) : sharePct.toFixed(4);
+      if (mark) {
+        setAutofilledValue("clanSharePct", value);
+      } else {
+        $("clanSharePct").value = value;
+      }
+    }
+
+    function fmtUsd(value) {
+      return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 }).format(value);
+    }
+
+    function fmtBtc(value) {
+      return `${value.toFixed(8)} BTC`;
+    }
+
+    function fmtNumber(value, digits = 2) {
+      return new Intl.NumberFormat("en-US", { maximumFractionDigits: digits, minimumFractionDigits: digits }).format(value);
+    }
+
+    function cycleBounds(now = new Date()) {
+      const todayUtc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+      const day = now.getUTCDay();
+      const daysSinceTuesday = (day - 2 + 7) % 7;
+      let start = todayUtc - daysSinceTuesday * MS_DAY;
+      if (now.getTime() < start) start -= 7 * MS_DAY;
+      const end = start + 7 * MS_DAY;
+      return { start: new Date(start), end: new Date(end) };
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const { start, end } = cycleBounds(now);
+      const remainingMs = Math.max(0, end.getTime() - now.getTime());
+      const elapsedDays = Math.max(0, (now.getTime() - start.getTime()) / MS_DAY);
+      const days = Math.floor(remainingMs / MS_DAY);
+      const hours = Math.floor((remainingMs % MS_DAY) / (60 * 60 * 1000));
+      const minutes = Math.floor((remainingMs % (60 * 60 * 1000)) / (60 * 1000));
+      const seconds = Math.floor((remainingMs % (60 * 1000)) / 1000);
+      $("cycleEnd").textContent = end.toISOString().replace(".000Z", " UTC");
+      $("elapsedText").textContent = `${fmtNumber(elapsedDays, 2)} of 7.00 days`;
+      $("countdown").textContent = `${days}d ${String(hours).padStart(2, "0")}h ${String(minutes).padStart(2, "0")}m ${String(seconds).padStart(2, "0")}s`;
+    }
+
+    function metric(label, value, tone = "") {
+      const div = document.createElement("div");
+      div.className = `metric ${tone}`.trim();
+      div.innerHTML = `<div class="label">${label}</div><div class="value">${value}</div>`;
+      return div;
+    }
+
+    function resultColumn(title, metrics) {
+      const div = document.createElement("div");
+      div.className = "result-column";
+      const heading = document.createElement("h3");
+      heading.textContent = title;
+      div.append(heading, ...metrics);
+      return div;
+    }
+
+    function comparisonRow(metrics) {
+      const div = document.createElement("div");
+      div.className = "comparison-row";
+      const heading = document.createElement("h3");
+      heading.textContent = "Comparison";
+      div.append(heading, ...metrics);
+      return div;
+    }
+
+    function calculate() {
+      const now = new Date();
+      const { start } = cycleBounds(now);
+      const autoElapsed = Math.max(0.01, Math.min(7, (now.getTime() - start.getTime()) / MS_DAY));
+      const elapsedOverride = numberValue("cycleElapsed", NaN);
+      const elapsedDays = Number.isFinite(elapsedOverride) && elapsedOverride > 0 ? Math.min(7, elapsedOverride) : autoElapsed;
+      const factor = inputMode === "todate" ? 7 / elapsedDays : 1;
+
+      const powerTh = numberValue("powerTh");
+      const listedWth = numberValue("listedWth", 15);
+      const leagueWth = numberValue("leagueWth", listedWth);
+      const kwhUsd = numberValue("kwhUsd", 0.05);
+      const maintenanceDiscount = Math.min(1, Math.max(0, numberValue("maintenanceDiscountPct", 0) / 100));
+      const discountFactor = 1 - maintenanceDiscount;
+      const serviceUsdThDay = Math.max(0, numberValue("serviceUsdThDay", 0.0089));
+      const btcUsd = numberValue("btcUsd");
+      const satsThDay = Math.round(numberValue("satsThDay"));
+      if ($("satsThDay").value && Number($("satsThDay").value) !== satsThDay) {
+        $("satsThDay").value = String(satsThDay);
+      }
+      const myClanTh = numberValue("myClanTh", 0);
+      const totalClanTh = numberValue("totalClanTh", 0);
+      const clanShare = myClanTh > 0 && totalClanTh > 0
+        ? myClanTh / totalClanTh
+        : Math.max(0, numberValue("clanSharePct", 0) / 100);
+      const projectedClanBlocks = numberValue("clanBlocksWon") * factor;
+      const rewardBtcEstimate = projectedClanBlocks * numberValue("btcBlockSize", 0) * clanShare;
+      const rewardBtc = rewardMode === "estimate"
+        ? rewardBtcEstimate
+        : numberValue("rewardBtc") * factor;
+      const projectedPersonalBlocks = numberValue("personalBlocksWon") * factor;
+      const gmtUsd = numberValue("gmtUsd", 0);
+      const personalGmt = projectedPersonalBlocks * numberValue("gmtBlockSize", 0);
+      const personalGmtUsd = personalGmt * gmtUsd;
+      const soloGrossBtc = powerTh * satsThDay * 7 / 100000000;
+      const extraBtc = Math.max(0, rewardBtc - soloGrossBtc);
+      const mwSoloEquivalentBtc = Math.min(rewardBtc, soloGrossBtc);
+      const mwSoloEquivalentTh = satsThDay > 0 ? mwSoloEquivalentBtc * 100000000 / (satsThDay * 7) : 0;
+      const extraEquivalentTh = satsThDay > 0 ? extraBtc * 100000000 / (satsThDay * 7) : 0;
+      const soloElectricityUsd = powerTh * listedWth * 24 * 7 / 1000 * kwhUsd * discountFactor;
+      const soloServiceUsd = powerTh * serviceUsdThDay * 7 * discountFactor;
+      const mwSoloEquivalentElectricityUsd = mwSoloEquivalentTh * listedWth * 24 * 7 / 1000 * kwhUsd * discountFactor;
+      const excessElectricityUsd = extraEquivalentTh * leagueWth * 24 * 7 / 1000 * kwhUsd * discountFactor;
+      const mwEquivalentTh = mwSoloEquivalentTh + extraEquivalentTh;
+      const estimatedElectricityUsd = mwSoloEquivalentElectricityUsd + excessElectricityUsd;
+      const estimatedServiceUsd = mwEquivalentTh * serviceUsdThDay * 7 * discountFactor;
+      const electricityUsd = costMode === "estimate"
+        ? estimatedElectricityUsd
+        : numberValue("electricityUsd") * factor;
+      const serviceUsd = costMode === "estimate"
+        ? estimatedServiceUsd
+        : numberValue("serviceUsd") * factor;
+      const spellBaseGmt = numberValue("spellUsd");
+      const spellGmt = $("spellPeriod").value === "day" ? spellBaseGmt * 7 : spellBaseGmt;
+      const spellUsd = spellGmt * gmtUsd;
+
+      const soloGrossUsd = soloGrossBtc * btcUsd;
+      const soloNetUsd = Math.max(0, soloGrossUsd - soloElectricityUsd - soloServiceUsd);
+
+      const rewardUsd = rewardBtc * btcUsd;
+      const totalRewardUsd = rewardUsd + personalGmtUsd;
+      const mwBeforeSpellsUsd = totalRewardUsd - electricityUsd - serviceUsd;
+      const mwAfterSpellsUsd = mwBeforeSpellsUsd - spellUsd;
+      const mwVsSoloUsd = mwBeforeSpellsUsd - soloNetUsd;
+      const mwVsSoloAfterSpellsUsd = mwAfterSpellsUsd - soloNetUsd;
+      const ratio = soloNetUsd > 0 ? mwBeforeSpellsUsd / soloNetUsd : null;
+      const ratioAfterSpells = soloNetUsd > 0 ? mwAfterSpellsUsd / soloNetUsd : null;
+
+      const denominatorTh = mwEquivalentTh;
+      const avgWthRaw = denominatorTh > 0
+        ? ((mwSoloEquivalentTh * listedWth) + (extraEquivalentTh * leagueWth)) / denominatorTh
+        : 0;
+      const avgWth = Math.max(listedWth, avgWthRaw);
+
+      const results = $("results");
+      results.innerHTML = "";
+      results.append(
+        resultColumn("MW Rewards", [
+          metric("Projected BTC reward", `${fmtBtc(rewardBtc)} / ${fmtUsd(rewardUsd)}`),
+          metric("Projected personal GMT", `${fmtNumber(personalGmt, 4)} GMT / ${fmtUsd(personalGmtUsd)}`),
+          metric("Projected reward value", fmtUsd(totalRewardUsd)),
+          metric("MW electricity", fmtUsd(electricityUsd), "warn"),
+          metric("MW service", fmtUsd(serviceUsd), "warn"),
+          metric("Reward-equivalent TH", fmtNumber(mwEquivalentTh, 4)),
+          metric("Excess MW electricity", costMode === "estimate" ? fmtUsd(excessElectricityUsd) : "n/a", costMode === "estimate" ? "warn" : ""),
+          metric("Spell allowance", `${fmtNumber(spellGmt, 4)} GMT / ${fmtUsd(spellUsd)}`, spellGmt > 0 ? "warn" : ""),
+          metric("MW net before spells", fmtUsd(mwBeforeSpellsUsd), mwBeforeSpellsUsd >= 0 ? "good" : "bad"),
+          metric("MW net after spells", fmtUsd(mwAfterSpellsUsd), mwAfterSpellsUsd >= 0 ? "good" : "bad")
+        ]),
+        resultColumn("Solo Baseline", [
+          metric("Estimated solo gross", `${fmtBtc(soloGrossBtc)} / ${fmtUsd(soloGrossUsd)}`),
+          metric("Solo-equivalent electricity", fmtUsd(soloElectricityUsd), "warn"),
+          metric("Solo service", fmtUsd(soloServiceUsd), "warn"),
+          metric("Estimated solo net", fmtUsd(soloNetUsd), soloNetUsd > 0 ? "" : "warn"),
+          metric(`Average W/TH @ ${fmtUsd(kwhUsd)}/kWh`, fmtNumber(avgWth, 2), avgWth <= 20 ? "good" : avgWth <= 80 ? "warn" : "bad")
+        ]),
+        comparisonRow([
+          metric("MW vs solo before spells", fmtUsd(mwVsSoloUsd), mwVsSoloUsd >= 0 ? "good" : "bad"),
+          metric("MW / solo before spells", ratio === null ? "n/a" : `${fmtNumber(ratio, 2)}x`, ratio === null ? "warn" : ratio >= 1 ? "good" : "bad"),
+          metric("MW vs solo after spells", fmtUsd(mwVsSoloAfterSpellsUsd), mwVsSoloAfterSpellsUsd >= 0 ? "good" : "bad"),
+          metric("MW / solo after spells", ratioAfterSpells === null ? "n/a" : `${fmtNumber(ratioAfterSpells, 2)}x`, ratioAfterSpells === null ? "warn" : ratioAfterSpells >= 1 ? "good" : "bad")
+        ])
+      );
+
+      const modeText = inputMode === "todate" ? `Current-to-date values scaled by ${fmtNumber(factor, 2)}x from ${fmtNumber(elapsedDays, 2)} elapsed days.` : "Values treated as full-week estimates.";
+      const rewardText = rewardMode === "estimate"
+        ? `BTC reward is estimated from ${fmtNumber(projectedClanBlocks, 2)} clan blocks, ${fmtBtc(numberValue("btcBlockSize", 0))} per block, and ${fmtNumber(clanShare * 100, 4)}% clan share. Personal GMT is estimated from ${fmtNumber(projectedPersonalBlocks, 2)} personal blocks.`
+        : "BTC reward uses the actual entered value.";
+      const costText = costMode === "estimate"
+        ? `MW maintenance is estimated only on ${fmtNumber(mwEquivalentTh, 4)} reward-equivalent TH from blocks won: ${fmtNumber(mwSoloEquivalentTh, 4)} TH at your ${fmtNumber(listedWth, 2)} W/TH and ${fmtNumber(extraEquivalentTh, 4)} TH at the league ${fmtNumber(leagueWth, 2)} W/TH; service uses ${fmtUsd(serviceUsdThDay)} per TH per day.`
+        : "MW electricity and service use actual entered values; solo baseline still uses estimated full-week mining-mode maintenance.";
+      const spellText = spellGmt > 0 && gmtUsd <= 0 ? " Add GMT price to convert spell allowance into USD." : "";
+      $("summaryText").textContent = `${modeText} ${rewardText} ${costText} MW reward is treated as before electricity/service.${spellText}`;
+    }
+
+    function recalculate() {
+      calculate();
+      setLiveStatus(`Recalculated at ${new Date().toLocaleTimeString()}.`, "good");
+    }
+
+    async function fetchDifficultyEstimate() {
+      const button = $("fetchDifficulty");
+      button.disabled = true;
+      const old = button.textContent;
+      button.textContent = "Fetching...";
+      try {
+        const response = await fetch("https://api.blockchain.info/charts/difficulty?timespan=10days&format=json");
+        const payload = await response.json();
+        const values = payload.values || [];
+        const latest = values[values.length - 1];
+        if (!latest) throw new Error("No difficulty values returned");
+        const difficulty = latest.y;
+        const sats = 86400 * 1e12 * 3.125 / (difficulty * Math.pow(2, 32)) * 100000000;
+        setAutofilledValue("satsThDay", String(Math.round(sats)));
+        calculate();
+      } catch (error) {
+        alert(`Could not fetch difficulty: ${error.message}`);
+      } finally {
+        button.textContent = old;
+        button.disabled = false;
+      }
+    }
+
+    async function fetchMarketPrices(options = {}) {
+      const silent = options.silent === true;
+      const button = $("fetchMarketPrices");
+      const old = button.textContent;
+      if (!silent) {
+        button.disabled = true;
+        button.textContent = "Fetching...";
+        setLiveStatus("Fetching BTC and GMT prices...");
+      }
+      try {
+        const response = await fetch(COINGECKO_PRICE_API, { cache: "no-store" });
+        if (!response.ok) throw new Error(`CoinGecko returned ${response.status}`);
+        const payload = await response.json();
+        const bitcoin = payload.bitcoin?.usd;
+        const gmt = payload["gmt-token"]?.usd;
+        if (!Number.isFinite(Number(bitcoin)) || !Number.isFinite(Number(gmt))) {
+          throw new Error("CoinGecko response did not include both BTC and GMT prices");
+        }
+        setAutofilledValue("btcUsd", Number(bitcoin).toFixed(2));
+        setAutofilledValue("gmtUsd", Number(gmt).toFixed(6));
+        calculate();
+        if (!silent) {
+          setLiveStatus(`Fetched market prices from CoinGecko: BTC ${fmtUsd(Number(bitcoin))}, GMT ${fmtUsd(Number(gmt))}.`, "good");
+        }
+      } catch (error) {
+        if (!silent) {
+          setLiveStatus(`Could not fetch market prices: ${error.message}.`, "bad");
+        }
+      } finally {
+        if (!silent) {
+          button.textContent = old;
+          button.disabled = false;
+        }
+      }
+    }
+
+    async function postGomining(path, body) {
+      const response = await fetch(`${GOMINING_API}/${path}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      if (!response.ok) throw new Error(`GoMining ${path} returned ${response.status}`);
+      const payload = await response.json();
+      if (!payload || !payload.data) throw new Error(`GoMining ${path} returned no data`);
+      return payload.data;
+    }
+
+    async function fetchSnapshotLeagueData(leagueId) {
+      const snapshotUrls = SNAPSHOT_API ? [SNAPSHOT_API, "gomining-miner-wars-live.json"] : ["gomining-miner-wars-live.json"];
+      let payload = null;
+      let sourceUrl = "";
+      let lastError = null;
+      for (const url of snapshotUrls) {
+        try {
+          const response = await fetch(url, { cache: "no-store" });
+          if (!response.ok) throw new Error(`${url} returned ${response.status}`);
+          payload = await response.json();
+          sourceUrl = url;
+          break;
+        } catch (error) {
+          lastError = error;
+        }
+      }
+      if (!payload) throw new Error(lastError ? lastError.message : "No live snapshot");
+      const league = payload.leagues && payload.leagues[String(leagueId)];
+      if (!league || !league.clan || !league.user) throw new Error("Selected league is not in the local snapshot");
+      return {
+        clanData: league.clan,
+        userData: league.user,
+        source: payload.generatedAt ? `snapshot from ${payload.generatedAt} (${sourceUrl})` : `snapshot (${sourceUrl})`
+      };
+    }
+
+    async function fetchCurrentLeagueData(leagueId, calculatedAt) {
+      const [clanData, userData] = await Promise.all([
+        fetchAllLeaderboardPages("clan-leaderboard/index-v2", leagueId, calculatedAt),
+        fetchAllLeaderboardPages("user-leaderboard/index", leagueId, calculatedAt)
+      ]);
+      return { clanData, userData, source: "live GoMining API" };
+    }
+
+    async function fetchAllLeaderboardPages(path, leagueId, calculatedAt) {
+      const limit = 50;
+      const first = await postGomining(path, {
+        calculatedAt,
+        pagination: { skip: 0, limit },
+        leagueId
+      });
+      const count = Number(first.count || 0);
+      const maxRows = Math.min(count, 1000);
+      const pages = [first];
+      for (let skip = limit; skip < maxRows; skip += limit) {
+        pages.push(await postGomining(path, {
+          calculatedAt,
+          pagination: { skip, limit },
+          leagueId
+        }));
+      }
+      return mergeLeaderboardPages(path, pages);
+    }
+
+    function mergeLeaderboardPages(path, pages) {
+      const base = { ...pages[0] };
+      if (path.includes("user-leaderboard")) {
+        const seen = new Set();
+        base.participants = pages.flatMap(page => page.participants || []).filter(participant => {
+          const key = participant.user?.userId ?? `${participant.position}:${participant.user?.alias || ""}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+        return base;
+      }
+      const mergeClanRows = key => {
+        const seen = new Set();
+        return pages.flatMap(page => page[key] || []).filter(clan => {
+          const rowKey = clan.clanId ?? `${clan.position}:${clan.clan?.name || ""}`;
+          if (seen.has(rowKey)) return false;
+          seen.add(rowKey);
+          return true;
+        });
+      };
+      base.clansPromoted = mergeClanRows("clansPromoted");
+      base.clansRemaining = mergeClanRows("clansRemaining");
+      base.clansRelegated = mergeClanRows("clansRelegated");
+      return base;
+    }
+
+    function findByText(items, search, readName) {
+      const needle = search.trim().toLowerCase();
+      if (!needle) return null;
+      return items.find(item => String(readName(item) || "").toLowerCase().includes(needle)) || null;
+    }
+
+    async function fetchLeagueData() {
+      const button = $("fetchLeagueData");
+      button.disabled = true;
+      const old = button.textContent;
+      button.textContent = "Autofilling...";
+      setLiveStatus("Fetching public Miner Wars leaderboard data...");
+      try {
+        const calculatedAt = new Date().toISOString();
+        const leagueId = Number.parseInt($("leagueId").value, 10);
+        let source = "";
+        let clanData;
+        let userData;
+        try {
+          ({ clanData, userData, source } = await fetchSnapshotLeagueData(leagueId));
+        } catch (_) {
+          ({ clanData, userData, source } = await fetchCurrentLeagueData(leagueId, calculatedAt));
+        }
+
+        const totalMinedBlocks = Number(clanData.totalMinedBlocks || 0);
+        const btcFund = Number(clanData.btcFund || 0);
+        const userTotalMinedBlocks = Number(userData.totalMinedBlocks || 0);
+        const gmtFund = Number(userData.gmtFund || 0);
+        if (totalMinedBlocks > 0 && btcFund > 0) {
+          setAutofilledValue("btcBlockSize", (btcFund / totalMinedBlocks).toFixed(12));
+        }
+        if (userTotalMinedBlocks > 0 && gmtFund > 0) {
+          setAutofilledValue("gmtBlockSize", (gmtFund / userTotalMinedBlocks).toFixed(8));
+        }
+        if (Number.isFinite(Number(clanData.weightedEnergyEfficiencyPerTh))) {
+          setAutofilledValue("leagueWth", Number(clanData.weightedEnergyEfficiencyPerTh).toFixed(4));
+        }
+
+        const clans = [
+          ...(clanData.clansPromoted || []),
+          ...(clanData.clansRemaining || []),
+          ...(clanData.clansRelegated || [])
+        ];
+        let clanMatch = findByText(clans, $("clanSearch").value, clan => clan.clan?.name || clan.name);
+        const playerMatch = findByText(userData.participants || [], $("playerSearch").value, player => player.user?.alias || player.user?.username || player.user?.name);
+        if (playerMatch) {
+          setAutofilledValue("personalBlocksWon", playerMatch.blocksMined ?? "");
+          setAutofilledValue("powerTh", Number(playerMatch.nftPower || 0).toFixed(4));
+          setAutofilledValue("myClanTh", Number(playerMatch.nftPower || 0).toFixed(4));
+          if (playerMatch.clan?.name && !$("clanSearch").value.trim()) {
+            setAutofilledValue("clanSearch", playerMatch.clan.name);
+            clanMatch = findByText(clans, playerMatch.clan.name, clan => clan.clan?.name || clan.name);
+          }
+        }
+        if (clanMatch) {
+          setAutofilledValue("clanBlocksWon", clanMatch.blocksMined ?? "");
+          setAutofilledValue("totalClanTh", Number(clanMatch.nftPower || 0).toFixed(4));
+        }
+        updateClanShareFromTh(true);
+
+        const filled = [
+          totalMinedBlocks > 0 ? `BTC block ${Number($("btcBlockSize").value).toPrecision(8)}` : null,
+          userTotalMinedBlocks > 0 ? `GMT block ${Number($("gmtBlockSize").value).toPrecision(8)}` : null,
+          clanMatch ? `clan ${clanMatch.clan?.name || clanMatch.name}` : null,
+          playerMatch ? `player ${playerMatch.user?.alias || "matched"}` : null
+        ].filter(Boolean).join("; ");
+        setLiveStatus(filled ? `Autofilled from ${source}: ${filled}.` : `Autofilled league block sizes from ${source}; add clan/player search text for block wins.`, "good");
+        rewardMode = "estimate";
+        costMode = "estimate";
+        updateRewardButtons();
+        updateCostButtons();
+        calculate();
+      } catch (error) {
+        setLiveStatus(`Could not autofill: ${error.message}. If this page is public/static, it may need a tiny same-origin proxy because GoMining does not reliably allow browser CORS.`, "bad");
+      } finally {
+        button.textContent = old;
+        button.disabled = false;
+      }
+    }
+
+    function loadLatestExample() {
+      clearAutofillMarks();
+      $("leagueId").value = "19";
+      $("clanSearch").value = "";
+      $("playerSearch").value = "";
+      $("powerTh").value = "3023.9142";
+      $("listedWth").value = "15";
+      $("leagueWth").value = "18";
+      $("kwhUsd").value = "0.05";
+      $("maintenanceDiscountPct").value = "7.8";
+      $("serviceUsdThDay").value = "0.0089";
+      $("btcUsd").value = "69923.65";
+      $("satsThDay").value = "46";
+      $("cycleElapsed").value = "";
+      $("clanBlocksWon").value = "35";
+      $("btcBlockSize").value = "3.125";
+      $("clanSharePct").value = "0.00744";
+      $("myClanTh").value = "";
+      $("totalClanTh").value = "";
+      $("rewardBtc").value = "0.00813211";
+      $("personalBlocksWon").value = "0";
+      $("gmtBlockSize").value = "0";
+      $("gmtUsd").value = "0.2890";
+      $("electricityUsd").value = "344.26";
+      $("serviceUsd").value = "146.78";
+      $("spellUsd").value = "6.16";
+      $("spellPeriod").value = "week";
+      inputMode = "full";
+      costMode = "actual";
+      rewardMode = "actual";
+      updateModeButtons();
+      updateCostButtons();
+      updateRewardButtons();
+      calculate();
+    }
+
+    function updateModeButtons() {
+      $("modeToDate").classList.toggle("active", inputMode === "todate");
+      $("modeFull").classList.toggle("active", inputMode === "full");
+      $("modeSwitch").classList.toggle("is-second", inputMode === "full");
+    }
+
+    function updateCostButtons() {
+      $("costEstimate").classList.toggle("active", costMode === "estimate");
+      $("costActual").classList.toggle("active", costMode === "actual");
+      $("costSwitch").classList.toggle("is-second", costMode === "actual");
+    }
+
+    function updateRewardButtons() {
+      $("rewardEstimate").classList.toggle("active", rewardMode === "estimate");
+      $("rewardActual").classList.toggle("active", rewardMode === "actual");
+      $("rewardSwitch").classList.toggle("is-second", rewardMode === "actual");
+    }
+
+    function applyTheme() {
+      document.documentElement.dataset.theme = theme;
+      $("themeToggle").textContent = theme === "dark" ? "Light mode" : "Dark mode";
+      $("themeToggle").setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+      localStorage.setItem("mwCalculatorTheme", theme);
+    }
+
+    $("modeToDate").addEventListener("click", () => {
+      inputMode = "todate";
+      updateModeButtons();
+      calculate();
+    });
+    $("modeFull").addEventListener("click", () => {
+      inputMode = "full";
+      updateModeButtons();
+      calculate();
+    });
+    $("costEstimate").addEventListener("click", () => {
+      costMode = "estimate";
+      updateCostButtons();
+      calculate();
+    });
+    $("costActual").addEventListener("click", () => {
+      costMode = "actual";
+      updateCostButtons();
+      calculate();
+    });
+    $("rewardEstimate").addEventListener("click", () => {
+      rewardMode = "estimate";
+      updateRewardButtons();
+      calculate();
+    });
+    $("rewardActual").addEventListener("click", () => {
+      rewardMode = "actual";
+      updateRewardButtons();
+      calculate();
+    });
+    $("recalculate").addEventListener("click", recalculate);
+    $("fetchLeagueData").addEventListener("click", fetchLeagueData);
+    $("fetchMarketPrices").addEventListener("click", () => fetchMarketPrices());
+    $("fetchDifficulty").addEventListener("click", fetchDifficultyEstimate);
+    $("loadLatest").addEventListener("click", loadLatestExample);
+    $("themeToggle").addEventListener("click", () => {
+      theme = theme === "dark" ? "light" : "dark";
+      applyTheme();
+    });
+    ids.forEach(id => $(id).addEventListener("input", event => {
+      markAutofilled(event.currentTarget.id, false);
+      if (event.currentTarget.id === "myClanTh" || event.currentTarget.id === "totalClanTh") {
+        updateClanShareFromTh();
+        markAutofilled("clanSharePct", false);
+      }
+      calculate();
+    }));
+    ids.forEach(id => $(id).addEventListener("change", calculate));
+
+    populateLeagueOptions();
+    applyTooltips();
+    applyTheme();
+    updateClock();
+    setInterval(updateClock, 1000);
+    calculate();
+    fetchMarketPrices({ silent: true });
+  </script>
+</body>
+</html>

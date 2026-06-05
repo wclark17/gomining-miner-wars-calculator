@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Miner Wars Calculator Help</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f5f7f4;
+      --surface: #ffffff;
+      --surface-2: #edf3f0;
+      --ink: #17211d;
+      --muted: #61706a;
+      --line: #d5ddd8;
+      --blue: #265f91;
+      --shadow: 0 12px 28px rgba(18, 31, 27, .08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #101613;
+        --surface: #18211d;
+        --surface-2: #1f2b26;
+        --ink: #edf5f0;
+        --muted: #9aaba3;
+        --line: #314139;
+        --blue: #7bb8f0;
+        --shadow: 0 16px 34px rgba(0, 0, 0, .28);
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 22px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      padding: 12px 0 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.1;
+      font-weight: 760;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 0;
+      padding: 14px 16px;
+      font-size: 16px;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--line);
+    }
+
+    p {
+      margin: 10px 0;
+      color: var(--muted);
+    }
+
+    a {
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    .back-link {
+      min-height: 36px;
+      padding: 8px 11px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    section {
+      margin-top: 18px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .content {
+      padding: 14px 16px 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .item {
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+    }
+
+    .item strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .92em;
+    }
+
+    @media (max-width: 760px) {
+      main { padding: 14px; }
+      header { display: block; }
+      .back-link { display: inline-flex; margin-top: 12px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>Miner Wars Calculator Help</h1>
+        <p>Definitions and assumptions for the weekly Miner Wars vs solo mining estimate.</p>
+      </div>
+      <a class="back-link" href="index.html">Back to calculator</a>
+    </header>
+
+    <section>
+      <h2>Cycle Timing</h2>
+      <div class="content">
+        <p>Miner Wars cycles are modeled as Tuesday 00:00 UTC to Tuesday 00:00 UTC. In current-to-date mode, the calculator scales block wins, entered rewards, and actual costs by elapsed cycle time. In full-week mode, values are used as entered.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Reward Inputs</h2>
+      <div class="content grid">
+        <div class="item"><strong>Miner Wars league</strong><p>Selects the public leaderboard to use for live autofill. Odyssey, Eclipse, and Horizon map to league IDs 1, 2, and 3. Dune I through Dune XXVI map to league IDs 5 through 30.</p></div>
+        <div class="item"><strong>Autofill league data</strong><p>Fetches current public leaderboard totals for the selected league. It can fill BTC block size, GMT block size, and league average W/TH. Add clan or player search text to fill block wins and TH for a specific row.</p></div>
+        <div class="item"><strong>Clan search</strong><p>Optional text matched against clan names. When a clan is found, autofill sets clan blocks won and clan total TH.</p></div>
+        <div class="item"><strong>Player alias search</strong><p>Optional text matched against player aliases. When a player is found, autofill sets cycle power TH, personal blocks won, and My TH in clan.</p></div>
+        <div class="item"><strong>Clan blocks won</strong><p>The number of BTC blocks your clan has won in the cycle so far, or for the full cycle when using full-week mode.</p></div>
+        <div class="item"><strong>BTC block size</strong><p>The BTC amount assigned to each clan block.</p></div>
+        <div class="item"><strong>My % of clan TH</strong><p>Your share of total clan power. The calculator uses this when the optional TH ratio fields are blank.</p></div>
+        <div class="item"><strong>My TH / Clan TH</strong><p>If both values are entered, the calculator uses <code>My TH / Clan total TH</code> instead of the percentage field.</p></div>
+        <div class="item"><strong>Actual MW reward BTC</strong><p>Use this for end-of-cycle comparisons when you have the actual BTC reward value.</p></div>
+        <div class="item"><strong>Personal GMT rewards</strong><p>Personal GMT reward is estimated as <code>personal blocks won * GMT block size</code>. Add a GMT price if you want that reward included in dollar comparisons.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Cost Inputs</h2>
+      <div class="content grid">
+        <div class="item"><strong>Electricity $/kWh</strong><p>The electricity rate used for estimates. GoMining examples commonly use 0.05 USD/kWh, while documentation describes a billing-period average range.</p></div>
+        <div class="item"><strong>Maintenance discount %</strong><p>The discount applied to estimated electricity and service costs.</p></div>
+        <div class="item"><strong>Service $ / TH / day</strong><p>The service charge used for weekly estimates. The calculator multiplies this by TH, days, and the discount factor.</p></div>
+        <div class="item"><strong>Actual electricity and service</strong><p>Use actual values after the cycle is complete or when you have them from the app.</p></div>
+        <div class="item"><strong>Spell allowance GMT</strong><p>Enter planned spell spending in GMT. The calculator converts it to USD with the GMT price field before subtracting it from the Miner Wars result.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Comparison Logic</h2>
+      <div class="content">
+        <p>The solo baseline estimates normal mining reward from whole network sats per TH per day, BTC price, cycle power, electricity, and service. The Miner Wars side uses either block-estimated reward or actual BTC reward as before-cost reward value, adds optional personal GMT value, subtracts Miner Wars electricity and service, then subtracts spell allowance converted from GMT to USD.</p>
+        <p>For Miner Wars maintenance estimates, electricity and service are charged only against reward-equivalent TH from blocks won. The solo-equivalent reward portion uses your listed W/TH. Reward above the estimated solo-mining equivalent uses the league average W/TH input. The solo baseline remains a full-week mining-mode estimate for the selected cycle power.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
