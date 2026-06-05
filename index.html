@@ -422,10 +422,30 @@
     .metric.warn .value { color: var(--amber); }
 
     .summary {
+      margin: 16px 16px 0;
       padding: 14px 16px;
-      border-top: 1px solid var(--line);
-      color: var(--muted);
-      background: var(--summary-surface);
+      border: 1px solid color-mix(in srgb, var(--blue) 32%, var(--line));
+      border-left: 4px solid var(--blue);
+      border-radius: 8px;
+      color: var(--ink);
+      background: color-mix(in srgb, var(--blue) 7%, var(--summary-surface));
+      font-size: 15px;
+      line-height: 1.45;
+      font-weight: 650;
+    }
+
+    .summary:empty {
+      display: none;
+    }
+
+    .summary::before {
+      content: "How this estimate is calculated";
+      display: block;
+      margin-bottom: 4px;
+      color: var(--blue);
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 800;
     }
 
     .disclaimer {
@@ -741,8 +761,8 @@
 
       <section>
         <h2>Estimate</h2>
-        <div class="results" id="results"></div>
         <div class="summary" id="summaryText"></div>
+        <div class="results" id="results"></div>
       </section>
     </div>
   </main>
