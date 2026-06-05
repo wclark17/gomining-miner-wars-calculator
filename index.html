@@ -176,9 +176,34 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
+    .market-strip {
+      border-color: color-mix(in srgb, var(--green) 36%, var(--line));
+      background: color-mix(in srgb, var(--green) 8%, var(--summary-surface));
+    }
+
+    .market-strip .group-fields {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: end;
+    }
+
     .selector-strip .group-fields {
       grid-template-columns: repeat(4, minmax(0, 1fr));
       align-items: end;
+    }
+
+    .match-info {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--muted);
+      background: var(--field);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .match-info:empty {
+      display: none;
     }
 
     .field {
@@ -486,6 +511,7 @@
       .fields { grid-template-columns: 1fr; }
       .group-fields,
       .switch-strip .group-fields,
+      .market-strip .group-fields,
       .selector-strip .group-fields,
       .results,
       .comparison-row { grid-template-columns: 1fr; }
@@ -518,6 +544,24 @@
       <section>
         <h2>Inputs</h2>
         <div class="fields">
+          <div class="field-group market-strip">
+            <h3>Market Prices</h3>
+            <div class="group-fields">
+              <div class="field">
+                <label for="btcUsd">BTC price USD</label>
+                <input id="btcUsd" type="number" step="0.01" value="69923.65">
+              </div>
+              <div class="field">
+                <label for="gmtUsd">GoMining/GMT price USD</label>
+                <input id="gmtUsd" type="number" step="0.0001" value="0">
+              </div>
+              <div class="field">
+                <label>&nbsp;</label>
+                <button class="action primary inline-action" id="fetchMarketPrices" type="button">Fetch market prices</button>
+              </div>
+            </div>
+          </div>
+
           <div class="field-group switch-strip">
             <h3>Setup</h3>
             <div class="group-fields">
@@ -565,19 +609,12 @@
                 <button class="action primary inline-action" id="fetchLeagueData" type="button">Autofill league data</button>
               </div>
             </div>
+            <div class="match-info" id="searchMatchInfo" aria-live="polite"></div>
           </div>
 
           <div class="field-group">
-            <h3>Market Prices</h3>
+            <h3>Network And Cycle</h3>
             <div class="group-fields">
-              <div class="field">
-                <label for="btcUsd">BTC price USD</label>
-                <input id="btcUsd" type="number" step="0.01" value="69923.65">
-              </div>
-              <div class="field">
-                <label for="gmtUsd">GMT price USD</label>
-                <input id="gmtUsd" type="number" step="0.0001" value="0">
-              </div>
               <div class="field">
                 <label for="satsThDay">Network sats / TH / day</label>
                 <input id="satsThDay" type="number" step="1" value="46">
@@ -684,7 +721,6 @@
         </div>
         <div class="actions">
           <button class="action primary" id="recalculate" type="button">Recalculate</button>
-          <button class="action" id="fetchMarketPrices" type="button">Fetch market prices</button>
           <button class="action" id="fetchDifficulty" type="button">Fetch difficulty estimate</button>
           <button class="action" id="loadLatest" type="button">Load latest sheet example</button>
           <div class="live-status" id="liveStatus" aria-live="polite"></div>
@@ -1186,6 +1222,14 @@
       return items.find(item => String(readName(item) || "").toLowerCase().includes(needle)) || null;
     }
 
+    function setSearchMatchInfo(parts) {
+      $("searchMatchInfo").textContent = parts.filter(Boolean).join(" · ");
+    }
+
+    function clearSearchMatchInfo() {
+      setSearchMatchInfo([]);
+    }
+
     async function fetchLeagueData() {
       const button = $("fetchLeagueData");
       button.disabled = true;
@@ -1225,6 +1269,8 @@
         ];
         let clanMatch = findByText(clans, $("clanSearch").value, clan => clan.clan?.name || clan.name);
         const playerMatch = findByText(userData.participants || [], $("playerSearch").value, player => player.user?.alias || player.user?.username || player.user?.name);
+        const clanSearchText = $("clanSearch").value.trim();
+        const playerSearchText = $("playerSearch").value.trim();
         if (playerMatch) {
           setAutofilledValue("personalBlocksWon", playerMatch.blocksMined ?? "");
           setAutofilledValue("powerTh", Number(playerMatch.nftPower || 0).toFixed(4));
@@ -1238,6 +1284,12 @@
           setAutofilledValue("clanBlocksWon", clanMatch.blocksMined ?? "");
           setAutofilledValue("totalClanTh", Number(clanMatch.nftPower || 0).toFixed(4));
         }
+        setSearchMatchInfo([
+          clanSearchText && clanMatch ? `Clan ${clanMatch.clan?.name || clanMatch.name}: ${fmtNumber(Number(clanMatch.blocksMined || 0), 0)} BTC blocks, ${fmtNumber(Number(clanMatch.nftPower || 0), 2)} TH` : null,
+          clanSearchText && !clanMatch ? `No clan match for "${clanSearchText}"` : null,
+          playerSearchText && playerMatch ? `Player ${playerMatch.user?.alias || playerMatch.user?.username || "matched"}: ${fmtNumber(Number(playerMatch.blocksMined || 0), 0)} GMT blocks, ${fmtNumber(Number(playerMatch.nftPower || 0), 2)} TH` : null,
+          playerSearchText && !playerMatch ? `No player match for "${playerSearchText}"` : null
+        ]);
         updateClanShareFromTh(true);
 
         const filled = [
@@ -1265,6 +1317,7 @@
       $("leagueId").value = "19";
       $("clanSearch").value = "";
       $("playerSearch").value = "";
+      clearSearchMatchInfo();
       $("powerTh").value = "3023.9142";
       $("listedWth").value = "15";
       $("leagueWth").value = "18";
@@ -1365,6 +1418,9 @@
       if (event.currentTarget.id === "myClanTh" || event.currentTarget.id === "totalClanTh") {
         updateClanShareFromTh();
         markAutofilled("clanSharePct", false);
+      }
+      if (event.currentTarget.id === "clanSearch" || event.currentTarget.id === "playerSearch" || event.currentTarget.id === "leagueId") {
+        clearSearchMatchInfo();
       }
       calculate();
     }));
