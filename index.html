@@ -7,44 +7,44 @@
   <style>
     :root {
       color-scheme: light;
-      --bg: #f5f7f4;
+      --bg: #f6f6fb;
       --surface: #ffffff;
-      --surface-2: #edf3f0;
+      --surface-2: #f1f1f9;
       --field: #ffffff;
-      --ink: #17211d;
-      --muted: #61706a;
-      --line: #d5ddd8;
-      --control-line: #c6d1cb;
-      --green: #0f7b4f;
-      --blue: #265f91;
-      --red: #b2382f;
-      --amber: #9a6514;
-      --shadow: 0 12px 28px rgba(18, 31, 27, .08);
-      --focus: rgba(38, 95, 145, .14);
+      --ink: #0e0f1f;
+      --muted: #62637a;
+      --line: #dadaea;
+      --control-line: #c7c7dc;
+      --green: #15cf74;
+      --blue: #7540ef;
+      --red: #ff3a44;
+      --amber: #fba705;
+      --shadow: 0 12px 30px rgba(14, 15, 31, .08);
+      --focus: rgba(117, 64, 239, .16);
       --primary-ink: #ffffff;
       --button-surface: #ffffff;
-      --summary-surface: #fbfcfb;
+      --summary-surface: #fbfbff;
     }
 
     :root[data-theme="dark"] {
       color-scheme: dark;
-      --bg: #101613;
-      --surface: #18211d;
-      --surface-2: #1f2b26;
-      --field: #121a16;
-      --ink: #edf5f0;
-      --muted: #9aaba3;
-      --line: #314139;
-      --control-line: #41564c;
-      --green: #4fc084;
-      --blue: #7bb8f0;
-      --red: #ff8379;
-      --amber: #e0ac5c;
+      --bg: #0e0f1f;
+      --surface: #161828;
+      --surface-2: #211f36;
+      --field: #0a0920;
+      --ink: #ffffff;
+      --muted: #a0a0b5;
+      --line: #2a2a38;
+      --control-line: #3f3d4f;
+      --green: #00f076;
+      --blue: #7540ef;
+      --red: #ff3a44;
+      --amber: #ffbd00;
       --shadow: 0 16px 34px rgba(0, 0, 0, .28);
-      --focus: rgba(123, 184, 240, .2);
-      --primary-ink: #07110d;
-      --button-surface: #1b2621;
-      --summary-surface: #141c18;
+      --focus: rgba(117, 64, 239, .28);
+      --primary-ink: #ffffff;
+      --button-surface: #211f36;
+      --summary-surface: #111224;
     }
 
     * { box-sizing: border-box; }
@@ -419,8 +419,8 @@
     }
 
     button.primary {
-      border-color: var(--green);
-      background: var(--green);
+      border-color: var(--blue);
+      background: var(--blue);
       color: var(--primary-ink);
     }
 
@@ -888,7 +888,7 @@
     let inputMode = "todate";
     let costMode = "estimate";
     let rewardMode = "estimate";
-    let theme = localStorage.getItem("mwCalculatorTheme") || "light";
+    let theme = localStorage.getItem("mwCalculatorTheme") || "dark";
     const leagueSearchCache = new Map();
     let suggestionRequestId = 0;
     const tooltips = {
