@@ -870,6 +870,7 @@
     const MS_DAY = 24 * 60 * 60 * 1000;
     const GOMINING_API = "https://api.gomining.com/api/nft-game";
     const SNAPSHOT_API = window.MINER_WARS_SNAPSHOT_API || "";
+    const PLAYER_CACHE_BASE = (window.MINER_WARS_PLAYER_CACHE_BASE || "").replace(/\/$/, "");
     const COINGECKO_PRICE_API = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,gmt-token&vs_currencies=usd&include_last_updated_at=true";
     const LEAGUES = [
       ["Odyssey", 1],
@@ -890,6 +891,7 @@
     let rewardMode = "estimate";
     let theme = localStorage.getItem("mwCalculatorTheme") || "dark";
     const leagueSearchCache = new Map();
+    const playerCache = new Map();
     let suggestionRequestId = 0;
     const tooltips = {
       modeToDate: "Use this while the cycle is still running. Inputs such as block wins and actual costs are scaled to a full week using elapsed cycle time.",
@@ -1287,6 +1289,46 @@
       return { clanData, userData, source: "live GoMining API" };
     }
 
+    async function fetchPlayerCacheData(leagueId) {
+      if (playerCache.has(leagueId)) return playerCache.get(leagueId);
+      const fileName = `gomining-miner-wars-players-league-${leagueId}.json`;
+      const urls = PLAYER_CACHE_BASE ? [`${PLAYER_CACHE_BASE}/${fileName}`, fileName] : [fileName];
+      let lastError = null;
+      for (const url of urls) {
+        try {
+          const response = await fetch(url, { cache: "no-store" });
+          if (!response.ok) throw new Error(`Cached player data returned ${response.status}`);
+          const payload = await response.json();
+          if (!payload || Number(payload.leagueId) !== Number(leagueId) || !payload.user) {
+            throw new Error("Cached player data did not match the selected league");
+          }
+          playerCache.set(leagueId, payload);
+          return payload;
+        } catch (error) {
+          lastError = error;
+        }
+      }
+      throw new Error(lastError ? lastError.message : "No cached player data");
+    }
+
+    async function enhanceUserDataWithPlayerCache(leagueId, userData) {
+      try {
+        const payload = await fetchPlayerCacheData(leagueId);
+        const cachedParticipants = payload.user?.participants || [];
+        const currentParticipants = userData.participants || [];
+        if (cachedParticipants.length > currentParticipants.length) {
+          return {
+            ...userData,
+            ...payload.user,
+            participants: cachedParticipants
+          };
+        }
+      } catch (_) {
+        // The lightweight snapshot is still useful if the slower full player cache is unavailable.
+      }
+      return userData;
+    }
+
     async function fetchAllLeaderboardPages(path, leagueId, calculatedAt) {
       const limit = 50;
       const first = await postGomining(path, {
@@ -1398,9 +1440,10 @@
     async function getLeagueSearchRows(leagueId) {
       if (leagueSearchCache.has(leagueId)) return leagueSearchCache.get(leagueId);
       const { clanData, userData } = await fetchSnapshotLeagueData(leagueId);
+      const enhancedUserData = await enhanceUserDataWithPlayerCache(leagueId, userData);
       const rows = {
         clans: getClanRows(clanData),
-        players: userData.participants || []
+        players: enhancedUserData.participants || []
       };
       leagueSearchCache.set(leagueId, rows);
       return rows;
@@ -1483,6 +1526,11 @@
       }
     }
 
+    function preloadSelectedLeagueSearchRows() {
+      const leagueId = Number.parseInt($("leagueId").value, 10);
+      getLeagueSearchRows(leagueId).catch(() => {});
+    }
+
     function setSearchMatchInfo(parts) {
       $("searchMatchInfo").textContent = parts.filter(Boolean).join(" · ");
     }
@@ -1507,6 +1555,11 @@
           ({ clanData, userData, source } = await fetchSnapshotLeagueData(leagueId));
         } catch (_) {
           ({ clanData, userData, source } = await fetchCurrentLeagueData(leagueId, calculatedAt));
+        }
+        const playerCacheUserData = await enhanceUserDataWithPlayerCache(leagueId, userData);
+        if ((playerCacheUserData.participants || []).length > (userData.participants || []).length) {
+          userData = playerCacheUserData;
+          source = `${source} + full player cache`;
         }
 
         const totalMinedBlocks = Number(clanData.totalMinedBlocks || 0);
@@ -1683,6 +1736,7 @@
         if (event.currentTarget.id === "playerSearch") updateSearchSuggestions("player");
         if (event.currentTarget.id === "leagueId") {
           hideAllSearchSuggestions();
+          preloadSelectedLeagueSearchRows();
           if ($("clanSearch").value.trim().length >= 2) updateSearchSuggestions("clan");
           if ($("playerSearch").value.trim().length >= 2) updateSearchSuggestions("player");
         }
