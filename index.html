@@ -206,6 +206,72 @@
       display: none;
     }
 
+    .search-control {
+      position: relative;
+      min-width: 0;
+    }
+
+    .search-suggestions {
+      position: absolute;
+      z-index: 20;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      max-height: 240px;
+      overflow-y: auto;
+      border: 1px solid var(--control-line);
+      border-radius: 6px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .search-suggestions[hidden] {
+      display: none;
+    }
+
+    .search-suggestion {
+      width: 100%;
+      min-height: 44px;
+      padding: 8px 10px;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .search-suggestion:last-child {
+      border-bottom: 0;
+    }
+
+    .search-suggestion:hover,
+    .search-suggestion:focus {
+      outline: 0;
+      background: color-mix(in srgb, var(--blue) 9%, var(--surface));
+    }
+
+    .search-suggestion strong,
+    .search-suggestion span {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .search-suggestion strong {
+      font-size: 14px;
+      font-weight: 760;
+    }
+
+    .search-suggestion span {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
     .field {
       display: grid;
       grid-template-columns: minmax(132px, .85fr) minmax(120px, 1fr);
@@ -640,11 +706,17 @@
               </div>
               <div class="field">
                 <label for="clanSearch">Clan search</label>
-                <input id="clanSearch" type="text" placeholder="optional">
+                <div class="search-control">
+                  <input id="clanSearch" type="text" placeholder="optional" autocomplete="off" aria-autocomplete="list" aria-controls="clanSearchSuggestions">
+                  <div class="search-suggestions" id="clanSearchSuggestions" role="listbox" hidden></div>
+                </div>
               </div>
               <div class="field">
                 <label for="playerSearch">Player alias search</label>
-                <input id="playerSearch" type="text" placeholder="optional">
+                <div class="search-control">
+                  <input id="playerSearch" type="text" placeholder="optional" autocomplete="off" aria-autocomplete="list" aria-controls="playerSearchSuggestions">
+                  <div class="search-suggestions" id="playerSearchSuggestions" role="listbox" hidden></div>
+                </div>
               </div>
               <div class="field action-field">
                 <label>&nbsp;</label>
@@ -813,6 +885,8 @@
     let costMode = "estimate";
     let rewardMode = "estimate";
     let theme = localStorage.getItem("mwCalculatorTheme") || "light";
+    const leagueSearchCache = new Map();
+    let suggestionRequestId = 0;
     const tooltips = {
       modeToDate: "Use this while the cycle is still running. Inputs such as block wins and actual costs are scaled to a full week using elapsed cycle time.",
       modeFull: "Use this when the values already represent the full Tuesday-to-Tuesday cycle.",
@@ -1262,6 +1336,149 @@
       return items.find(item => String(readName(item) || "").toLowerCase().includes(needle)) || null;
     }
 
+    function normalizeSearchText(value) {
+      return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+    }
+
+    function isSubsequence(needle, haystack) {
+      let index = 0;
+      for (const char of haystack) {
+        if (char === needle[index]) index += 1;
+        if (index === needle.length) return true;
+      }
+      return false;
+    }
+
+    function fuzzyScore(name, search) {
+      const rawName = String(name || "").toLowerCase();
+      const rawSearch = String(search || "").trim().toLowerCase();
+      const normalizedName = normalizeSearchText(rawName);
+      const normalizedSearch = normalizeSearchText(rawSearch);
+      if (!normalizedSearch || !normalizedName) return -1;
+      if (normalizedName === normalizedSearch) return 120;
+      if (normalizedName.startsWith(normalizedSearch)) return 105;
+      const compactIndex = normalizedName.indexOf(normalizedSearch);
+      if (compactIndex >= 0) return 88 - Math.min(compactIndex, 20);
+      const words = rawName.split(/[^a-z0-9]+/).filter(Boolean);
+      if (words.some(word => word.startsWith(rawSearch))) return 80;
+      if (words.some(word => word.includes(rawSearch))) return 68;
+      if (normalizedSearch.length >= 3 && isSubsequence(normalizedSearch, normalizedName)) return 42;
+      return -1;
+    }
+
+    function getClanName(clan) {
+      return clan.clan?.name || clan.name || "";
+    }
+
+    function getPlayerName(player) {
+      return player.user?.alias || player.user?.username || player.user?.name || "";
+    }
+
+    function formatClanMeta(clan) {
+      return `${fmtNumber(Number(clan.blocksMined || 0), 0)} BTC blocks · ${fmtNumber(Number(clan.nftPower || 0), 2)} TH`;
+    }
+
+    function formatPlayerMeta(player) {
+      const clan = player.clan?.name ? ` · ${player.clan.name}` : "";
+      return `${fmtNumber(Number(player.blocksMined || 0), 0)} GMT blocks · ${fmtNumber(Number(player.nftPower || 0), 2)} TH${clan}`;
+    }
+
+    function getClanRows(clanData) {
+      return [
+        ...(clanData.clansPromoted || []),
+        ...(clanData.clansRemaining || []),
+        ...(clanData.clansRelegated || [])
+      ];
+    }
+
+    async function getLeagueSearchRows(leagueId) {
+      if (leagueSearchCache.has(leagueId)) return leagueSearchCache.get(leagueId);
+      const { clanData, userData } = await fetchSnapshotLeagueData(leagueId);
+      const rows = {
+        clans: getClanRows(clanData),
+        players: userData.participants || []
+      };
+      leagueSearchCache.set(leagueId, rows);
+      return rows;
+    }
+
+    function rankSearchMatches(items, search, readName) {
+      return items
+        .map(item => ({ item, score: fuzzyScore(readName(item), search) }))
+        .filter(match => match.score >= 0)
+        .sort((a, b) => b.score - a.score || String(readName(a.item)).localeCompare(String(readName(b.item))))
+        .slice(0, 7)
+        .map(match => match.item);
+    }
+
+    function hideSearchSuggestions(type) {
+      const container = type === "clan" ? $("clanSearchSuggestions") : $("playerSearchSuggestions");
+      container.hidden = true;
+      container.replaceChildren();
+    }
+
+    function hideAllSearchSuggestions() {
+      hideSearchSuggestions("clan");
+      hideSearchSuggestions("player");
+    }
+
+    function addSearchSuggestion(container, label, meta, onSelect) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "search-suggestion";
+      button.setAttribute("role", "option");
+      const title = document.createElement("strong");
+      title.textContent = label;
+      const detail = document.createElement("span");
+      detail.textContent = meta;
+      button.append(title, detail);
+      button.addEventListener("mousedown", event => event.preventDefault());
+      button.addEventListener("click", onSelect);
+      container.append(button);
+    }
+
+    function renderSearchSuggestions(type, matches) {
+      const container = type === "clan" ? $("clanSearchSuggestions") : $("playerSearchSuggestions");
+      container.replaceChildren();
+      matches.forEach(match => {
+        const label = type === "clan" ? getClanName(match) : getPlayerName(match);
+        const meta = type === "clan" ? formatClanMeta(match) : formatPlayerMeta(match);
+        addSearchSuggestion(container, label, meta, () => {
+          const inputId = type === "clan" ? "clanSearch" : "playerSearch";
+          $(inputId).value = label;
+          markAutofilled(inputId, false);
+          hideAllSearchSuggestions();
+          setSearchMatchInfo([
+            type === "clan" ? `Selected clan ${label}: ${meta}` : null,
+            type === "player" ? `Selected player ${label}: ${meta}` : null
+          ]);
+          calculate();
+        });
+      });
+      container.hidden = !matches.length;
+    }
+
+    async function updateSearchSuggestions(type) {
+      const input = type === "clan" ? $("clanSearch") : $("playerSearch");
+      const search = input.value.trim();
+      if (search.length < 2) {
+        hideSearchSuggestions(type);
+        return;
+      }
+      const requestId = ++suggestionRequestId;
+      try {
+        const leagueId = Number.parseInt($("leagueId").value, 10);
+        const rows = await getLeagueSearchRows(leagueId);
+        if (requestId !== suggestionRequestId) return;
+        const matches = type === "clan"
+          ? rankSearchMatches(rows.clans, search, getClanName)
+          : rankSearchMatches(rows.players, search, getPlayerName);
+        renderSearchSuggestions(type, matches);
+      } catch (_) {
+        hideSearchSuggestions(type);
+      }
+    }
+
     function setSearchMatchInfo(parts) {
       $("searchMatchInfo").textContent = parts.filter(Boolean).join(" · ");
     }
@@ -1302,14 +1519,10 @@
           setAutofilledValue("leagueWth", Number(clanData.weightedEnergyEfficiencyPerTh).toFixed(4));
         }
 
-        const clans = [
-          ...(clanData.clansPromoted || []),
-          ...(clanData.clansRemaining || []),
-          ...(clanData.clansRelegated || [])
-        ];
-        let clanMatch = findByText(clans, $("clanSearch").value, clan => clan.clan?.name || clan.name);
-        const playerMatch = findByText(userData.participants || [], $("playerSearch").value, player => player.user?.alias || player.user?.username || player.user?.name);
-        const clanSearchText = $("clanSearch").value.trim();
+        const clans = getClanRows(clanData);
+        let clanMatch = findByText(clans, $("clanSearch").value, getClanName);
+        const playerMatch = findByText(userData.participants || [], $("playerSearch").value, getPlayerName);
+        let clanSearchText = $("clanSearch").value.trim();
         const playerSearchText = $("playerSearch").value.trim();
         if (playerMatch) {
           setAutofilledValue("personalBlocksWon", playerMatch.blocksMined ?? "");
@@ -1317,7 +1530,8 @@
           setAutofilledValue("myClanTh", Number(playerMatch.nftPower || 0).toFixed(4));
           if (playerMatch.clan?.name && !$("clanSearch").value.trim()) {
             setAutofilledValue("clanSearch", playerMatch.clan.name);
-            clanMatch = findByText(clans, playerMatch.clan.name, clan => clan.clan?.name || clan.name);
+            clanSearchText = $("clanSearch").value.trim();
+            clanMatch = findByText(clans, playerMatch.clan.name, getClanName);
           }
         }
         if (clanMatch) {
@@ -1461,10 +1675,22 @@
       }
       if (event.currentTarget.id === "clanSearch" || event.currentTarget.id === "playerSearch" || event.currentTarget.id === "leagueId") {
         clearSearchMatchInfo();
+        if (event.currentTarget.id === "clanSearch") updateSearchSuggestions("clan");
+        if (event.currentTarget.id === "playerSearch") updateSearchSuggestions("player");
+        if (event.currentTarget.id === "leagueId") {
+          hideAllSearchSuggestions();
+          if ($("clanSearch").value.trim().length >= 2) updateSearchSuggestions("clan");
+          if ($("playerSearch").value.trim().length >= 2) updateSearchSuggestions("player");
+        }
       }
       calculate();
     }));
     ids.forEach(id => $(id).addEventListener("change", calculate));
+    $("clanSearch").addEventListener("focus", () => updateSearchSuggestions("clan"));
+    $("playerSearch").addEventListener("focus", () => updateSearchSuggestions("player"));
+    document.addEventListener("click", event => {
+      if (!event.target.closest(".search-control")) hideAllSearchSuggestions();
+    });
 
     populateLeagueOptions();
     applyTooltips();
