@@ -998,7 +998,7 @@
 
       const modeText = inputMode === "todate" ? `Current-to-date values scaled by ${fmtNumber(factor, 2)}x from ${fmtNumber(elapsedDays, 2)} elapsed days.` : "Values treated as full-week estimates.";
       const rewardText = rewardMode === "estimate"
-        ? `BTC reward is estimated from ${fmtNumber(projectedClanBlocks, 2)} clan blocks, ${fmtBtc(numberValue("btcBlockSize", 0))} per block, and ${fmtNumber(clanShare * 100, 4)}% clan share. Personal GMT is estimated from ${fmtNumber(projectedPersonalBlocks, 2)} personal blocks.`
+        ? `BTC reward is estimated from about ${fmtNumber(Math.round(projectedClanBlocks), 0)} clan blocks, ${fmtBtc(numberValue("btcBlockSize", 0))} per block, and ${fmtNumber(clanShare * 100, 4)}% clan share. Personal GMT is estimated from about ${fmtNumber(Math.round(projectedPersonalBlocks), 0)} personal blocks.`
         : "BTC reward uses the actual entered value.";
       const costText = costMode === "estimate"
         ? `MW maintenance is estimated only on ${fmtNumber(mwEquivalentTh, 4)} reward-equivalent TH from blocks won: ${fmtNumber(mwSoloEquivalentTh, 4)} TH at your ${fmtNumber(listedWth, 2)} W/TH and ${fmtNumber(extraEquivalentTh, 4)} TH at the league ${fmtNumber(leagueWth, 2)} W/TH; service uses ${fmtUsd(serviceUsdThDay)} per TH per day.`
