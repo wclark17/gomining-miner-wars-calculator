@@ -1048,6 +1048,12 @@
       return div;
     }
 
+    function fmtUsdWithGmt(usdValue, gmtUsd) {
+      const usdText = fmtUsd(usdValue);
+      if (!Number.isFinite(gmtUsd) || gmtUsd <= 0) return usdText;
+      return `${usdText} / ${fmtNumber(usdValue / gmtUsd, 2)} GMT`;
+    }
+
     function resultColumn(title, metrics) {
       const div = document.createElement("div");
       div.className = "result-column";
@@ -1147,18 +1153,18 @@
           metric("Projected BTC reward", `${fmtBtc(rewardBtc)} / ${fmtUsd(rewardUsd)}`),
           metric("Projected personal GMT", `${fmtNumber(personalGmt, 4)} GMT / ${fmtUsd(personalGmtUsd)}`),
           metric("Projected reward value", fmtUsd(totalRewardUsd)),
-          metric("MW electricity", fmtUsd(electricityUsd), "warn"),
-          metric("MW service", fmtUsd(serviceUsd), "warn"),
+          metric("MW electricity", fmtUsdWithGmt(electricityUsd, gmtUsd), "warn"),
+          metric("MW service", fmtUsdWithGmt(serviceUsd, gmtUsd), "warn"),
           metric("Reward-equivalent TH", fmtNumber(mwEquivalentTh, 4)),
-          metric("Excess MW electricity", costMode === "estimate" ? fmtUsd(excessElectricityUsd) : "n/a", costMode === "estimate" ? "warn" : ""),
+          metric("Excess MW electricity", costMode === "estimate" ? fmtUsdWithGmt(excessElectricityUsd, gmtUsd) : "n/a", costMode === "estimate" ? "warn" : ""),
           metric("Spell allowance", `${fmtNumber(spellGmt, 4)} GMT / ${fmtUsd(spellUsd)}`, spellGmt > 0 ? "warn" : ""),
           metric("MW net before spells", fmtUsd(mwBeforeSpellsUsd), mwBeforeSpellsUsd >= 0 ? "good" : "bad"),
           metric("MW net after spells", fmtUsd(mwAfterSpellsUsd), mwAfterSpellsUsd >= 0 ? "good" : "bad")
         ]),
         resultColumn("Solo Baseline", [
           metric("Estimated solo gross", `${fmtBtc(soloGrossBtc)} / ${fmtUsd(soloGrossUsd)}`),
-          metric("Solo-equivalent electricity", fmtUsd(soloElectricityUsd), "warn"),
-          metric("Solo service", fmtUsd(soloServiceUsd), "warn"),
+          metric("Solo-equivalent electricity", fmtUsdWithGmt(soloElectricityUsd, gmtUsd), "warn"),
+          metric("Solo service", fmtUsdWithGmt(soloServiceUsd, gmtUsd), "warn"),
           metric("Estimated solo net", fmtUsd(soloNetUsd), soloNetUsd > 0 ? "" : "warn"),
           metric(`Average W/TH @ ${fmtUsd(kwhUsd)}/kWh`, fmtNumber(avgWth, 2), avgWth <= 20 ? "good" : avgWth <= 80 ? "warn" : "bad")
         ]),
