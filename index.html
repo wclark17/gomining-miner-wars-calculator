@@ -729,7 +729,7 @@
           <summary>Assumptions</summary>
           <p>Cycle boundaries are Tuesday 00:00 UTC to Tuesday 00:00 UTC. Solo BTC uses network-derived sats/TH/day, so it excludes transaction fees, pool luck, and GoMining-specific accounting adjustments.</p>
           <p>Autofill uses public GoMining Miner Wars leaderboard data when the browser or hosting proxy allows the request. It can fill league block sizes and weighted average W/TH automatically; clan and player block wins need matching search text.</p>
-          <p>Autofilled fields are marked until you manually edit them, so it is obvious when live or snapshot data replaced your entered value.</p>
+          <p>Autofilled fields are marked until you manually edit them, so it is obvious when live or cached data replaced your entered value.</p>
           <p>In block-estimate mode, BTC reward is clan blocks won times BTC block size times your clan TH share. If My TH and Clan total TH are entered, that ratio is used; otherwise the percentage field is used. Personal GMT rewards are personal blocks won times GMT block size. Current-to-date mode extrapolates block wins to a full cycle based on elapsed time. Block-estimated rewards are treated as before costs by default.</p>
           <p>In estimate mode, Miner Wars electricity and service are charged only against reward-equivalent TH from blocks won. The solo-equivalent reward portion uses your listed W/TH, and reward above estimated Mining Mode uses the league weighted average W/TH. The solo baseline still uses full-week mining-mode costs for the selected cycle power. In actual mode, the Miner Wars electricity and service inputs are used directly and scaled only when current-to-date mode is active.</p>
           <p>Estimated solo net is floored at zero. Ratio outputs are hidden when solo net is zero because a ratio against zero is nonsense wearing a tiny hat.</p>
@@ -1138,26 +1138,24 @@
     async function fetchSnapshotLeagueData(leagueId) {
       const snapshotUrls = SNAPSHOT_API ? [SNAPSHOT_API, "gomining-miner-wars-live.json"] : ["gomining-miner-wars-live.json"];
       let payload = null;
-      let sourceUrl = "";
       let lastError = null;
       for (const url of snapshotUrls) {
         try {
           const response = await fetch(url, { cache: "no-store" });
-          if (!response.ok) throw new Error(`${url} returned ${response.status}`);
+          if (!response.ok) throw new Error(`Cached league data returned ${response.status}`);
           payload = await response.json();
-          sourceUrl = url;
           break;
         } catch (error) {
           lastError = error;
         }
       }
-      if (!payload) throw new Error(lastError ? lastError.message : "No live snapshot");
+      if (!payload) throw new Error(lastError ? lastError.message : "No cached league data");
       const league = payload.leagues && payload.leagues[String(leagueId)];
-      if (!league || !league.clan || !league.user) throw new Error("Selected league is not in the local snapshot");
+      if (!league || !league.clan || !league.user) throw new Error("Selected league is not in cached data");
       return {
         clanData: league.clan,
         userData: league.user,
-        source: payload.generatedAt ? `snapshot from ${payload.generatedAt} (${sourceUrl})` : `snapshot (${sourceUrl})`
+        source: "cached league data"
       };
     }
 
