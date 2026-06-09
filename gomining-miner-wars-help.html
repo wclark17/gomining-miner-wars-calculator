@@ -150,7 +150,7 @@
     <section>
       <h2>Cycle Timing</h2>
       <div class="content">
-        <p>Miner Wars cycles are modeled as Tuesday 00:00 UTC to Tuesday 00:00 UTC. In current-to-date mode, the calculator scales block wins, entered rewards, and actual costs by elapsed cycle time. In full-week mode, values are used as entered.</p>
+        <p>Miner Wars cycles are modeled as Tuesday 00:00 UTC to Tuesday 00:00 UTC. In current-to-date mode, the calculator scales block wins, entered rewards, and actual costs by elapsed cycle time. In full-week mode, values are used as entered, while estimated electricity and service still use a full seven-day cycle.</p>
       </div>
     </section>
 
@@ -176,7 +176,8 @@
         <div class="item"><strong>Electricity $/kWh</strong><p>The electricity rate used for estimates. GoMining examples commonly use 0.05 USD/kWh, while documentation describes a billing-period average range.</p></div>
         <div class="item"><strong>Maintenance discount %</strong><p>The discount applied to estimated electricity and service costs.</p></div>
         <div class="item"><strong>Service $ / TH / day</strong><p>The service charge used for weekly estimates. The calculator multiplies this by TH, days, and the discount factor.</p></div>
-        <div class="item"><strong>Actual electricity and service</strong><p>Use actual values after the cycle is complete or when you have them from the app.</p></div>
+        <div class="item"><strong>Estimated electricity and service</strong><p>Use estimated fees when the app countdown has rolled into the next cycle but official results for the previous cycle are not in yet.</p></div>
+        <div class="item"><strong>Actual electricity and service</strong><p>Use actual values only when the app values are for the cycle you are analyzing.</p></div>
         <div class="item"><strong>Spell allowance GMT</strong><p>Enter planned spell spending in GMT. The calculator converts it to USD with the GMT price field before subtracting it from the Miner Wars result.</p></div>
       </div>
     </section>

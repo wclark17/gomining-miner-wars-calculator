@@ -687,7 +687,7 @@
               <div class="field">
                 <label>Cost source</label>
                 <div class="segmented switch" id="costSwitch" role="group" aria-label="Cost mode">
-                  <button type="button" id="costEstimate" class="active">Estimate mid-week</button>
+                  <button type="button" id="costEstimate" class="active">Estimate fees</button>
                   <button type="button" id="costActual">Use actual costs</button>
                 </div>
               </div>
@@ -896,8 +896,8 @@
     const tooltips = {
       modeToDate: "Use this while the cycle is still running. Inputs such as block wins and actual costs are scaled to a full week using elapsed cycle time.",
       modeFull: "Use this when the values already represent the full Tuesday-to-Tuesday cycle.",
-      costEstimate: "Estimate electricity and service from the public formula inputs.",
-      costActual: "Use actual electricity and service values after the cycle is complete or when you have them from the app.",
+      costEstimate: "Estimate electricity and service from the public formula inputs. In full-week mode this still uses the full past cycle, which helps after the countdown resets but official costs are not in yet.",
+      costActual: "Use actual electricity and service values only when the app values are for the cycle you are analyzing.",
       rewardEstimate: "Estimate BTC reward from clan block wins, BTC block size, and your share of clan TH.",
       rewardActual: "Use an actual BTC reward value instead of the block estimate.",
       leagueId: "League to pull public Miner Wars leaderboard values from. Dune numbering uses roman numerals.",
@@ -1180,8 +1180,9 @@
       const rewardText = rewardMode === "estimate"
         ? `BTC reward is estimated from about ${fmtNumber(Math.round(projectedClanBlocks), 0)} clan blocks, ${fmtBtc(numberValue("btcBlockSize", 0))} per block, and ${fmtNumber(clanShare * 100, 4)}% clan share. Personal GMT is estimated from about ${fmtNumber(Math.round(projectedPersonalBlocks), 0)} personal blocks.`
         : "BTC reward uses the actual entered value.";
+      const costBasisText = inputMode === "full" ? "full-cycle" : "current-to-date scaled";
       const costText = costMode === "estimate"
-        ? `MW maintenance is estimated only on ${fmtNumber(mwEquivalentTh, 4)} reward-equivalent TH from blocks won: ${fmtNumber(mwSoloEquivalentTh, 4)} TH at your ${fmtNumber(listedWth, 2)} W/TH and ${fmtNumber(extraEquivalentTh, 4)} TH at the league ${fmtNumber(leagueWth, 2)} W/TH; service uses ${fmtUsd(serviceUsdThDay)} per TH per day.`
+        ? `MW maintenance is estimated on a ${costBasisText} basis using ${fmtNumber(mwEquivalentTh, 4)} reward-equivalent TH from blocks won: ${fmtNumber(mwSoloEquivalentTh, 4)} TH at your ${fmtNumber(listedWth, 2)} W/TH and ${fmtNumber(extraEquivalentTh, 4)} TH at the league ${fmtNumber(leagueWth, 2)} W/TH; service uses ${fmtUsd(serviceUsdThDay)} per TH per day.`
         : "MW electricity and service use actual entered values; solo baseline still uses estimated full-week mining-mode maintenance.";
       const spellText = spellGmt > 0 && gmtUsd <= 0 ? " Add GMT price to convert spell allowance into USD." : "";
       $("summaryText").textContent = `${modeText} ${rewardText} ${costText} MW reward is treated as before electricity/service.${spellText}`;
@@ -1658,7 +1659,7 @@
       $("spellUsd").value = "6.16";
       $("spellPeriod").value = "week";
       inputMode = "full";
-      costMode = "actual";
+      costMode = "estimate";
       rewardMode = "actual";
       updateModeButtons();
       updateCostButtons();
