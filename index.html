@@ -871,6 +871,7 @@
     const GOMINING_API = "https://api.gomining.com/api/nft-game";
     const SNAPSHOT_API = window.MINER_WARS_SNAPSHOT_API || "";
     const PLAYER_CACHE_BASE = (window.MINER_WARS_PLAYER_CACHE_BASE || "").replace(/\/$/, "");
+    const SEARCH_CACHE_MAX_AGE_MS = 5 * 60 * 1000;
     const COINGECKO_PRICE_API = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,gmt-token&vs_currencies=usd&include_last_updated_at=true";
     const LEAGUES = [
       ["Odyssey", 1],
@@ -1297,7 +1298,8 @@
     }
 
     async function fetchPlayerCacheData(leagueId) {
-      if (playerCache.has(leagueId)) return playerCache.get(leagueId);
+      const cached = playerCache.get(leagueId);
+      if (cached && Date.now() - cached.fetchedAt < SEARCH_CACHE_MAX_AGE_MS) return cached.payload;
       const fileName = `gomining-miner-wars-players-league-${leagueId}.json`;
       const urls = PLAYER_CACHE_BASE ? [`${PLAYER_CACHE_BASE}/${fileName}`, fileName] : [fileName];
       let lastError = null;
@@ -1309,13 +1311,25 @@
           if (!payload || Number(payload.leagueId) !== Number(leagueId) || !payload.user) {
             throw new Error("Cached player data did not match the selected league");
           }
-          playerCache.set(leagueId, payload);
+          playerCache.set(leagueId, { payload, fetchedAt: Date.now() });
           return payload;
         } catch (error) {
           lastError = error;
         }
       }
       throw new Error(lastError ? lastError.message : "No cached player data");
+    }
+
+    function participantKey(player) {
+      return player.user?.userId ?? `${player.position}:${getPlayerName(player)}`;
+    }
+
+    function mergeFreshParticipants(cachedParticipants, currentParticipants) {
+      const currentByKey = new Map();
+      currentParticipants.forEach(player => currentByKey.set(participantKey(player), player));
+      const merged = cachedParticipants.map(player => currentByKey.get(participantKey(player)) || player);
+      cachedParticipants.forEach(player => currentByKey.delete(participantKey(player)));
+      return merged.concat(Array.from(currentByKey.values()));
     }
 
     async function enhanceUserDataWithPlayerCache(leagueId, userData) {
@@ -1327,7 +1341,7 @@
           return {
             ...userData,
             ...payload.user,
-            participants: cachedParticipants
+            participants: mergeFreshParticipants(cachedParticipants, currentParticipants)
           };
         }
       } catch (_) {
@@ -1445,14 +1459,15 @@
     }
 
     async function getLeagueSearchRows(leagueId) {
-      if (leagueSearchCache.has(leagueId)) return leagueSearchCache.get(leagueId);
+      const cached = leagueSearchCache.get(leagueId);
+      if (cached && Date.now() - cached.fetchedAt < SEARCH_CACHE_MAX_AGE_MS) return cached.rows;
       const { clanData, userData } = await fetchSnapshotLeagueData(leagueId);
       const enhancedUserData = await enhanceUserDataWithPlayerCache(leagueId, userData);
       const rows = {
         clans: getClanRows(clanData),
         players: enhancedUserData.participants || []
       };
-      leagueSearchCache.set(leagueId, rows);
+      leagueSearchCache.set(leagueId, { rows, fetchedAt: Date.now() });
       return rows;
     }
 
@@ -1555,6 +1570,8 @@
       try {
         const calculatedAt = new Date().toISOString();
         const leagueId = Number.parseInt($("leagueId").value, 10);
+        playerCache.delete(leagueId);
+        leagueSearchCache.delete(leagueId);
         let source = "";
         let clanData;
         let userData;
