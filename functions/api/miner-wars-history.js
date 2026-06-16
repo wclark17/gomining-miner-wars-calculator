@@ -2,17 +2,25 @@ const API_ROOT = "https://api.gomining.com/api/nft-game";
 const MAX_ROWS = 1000;
 const LIMIT = 50;
 
-const corsHeaders = {
+const baseHeaders = {
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET, OPTIONS",
   "access-control-allow-headers": "content-type",
-  "cache-control": "public, max-age=300",
   "content-type": "application/json; charset=utf-8"
 };
 
-const json = (payload, status = 200) => new Response(JSON.stringify(payload), {
+const cacheHeaders = calculatedAt => {
+  const ageMs = Date.now() - Date.parse(calculatedAt);
+  const maxAge = ageMs > 10 * 60 * 1000 ? 31536000 : 300;
+  return {
+    ...baseHeaders,
+    "cache-control": `public, max-age=${maxAge}${maxAge > 300 ? ", immutable" : ""}`
+  };
+};
+
+const json = (payload, status = 200, headers = cacheHeaders(new Date().toISOString())) => new Response(JSON.stringify(payload), {
   status,
-  headers: corsHeaders
+  headers
 });
 
 async function postGomining(path, body) {
@@ -81,7 +89,7 @@ async function fetchAllPages(path, leagueId, calculatedAt) {
 }
 
 export async function onRequestOptions() {
-  return new Response(null, { headers: corsHeaders });
+  return new Response(null, { headers: cacheHeaders(new Date().toISOString()) });
 }
 
 export async function onRequestGet({ request }) {
@@ -97,18 +105,28 @@ export async function onRequestGet({ request }) {
   }
 
   try {
+    const cache = typeof caches !== "undefined" ? caches.default : null;
+    if (cache) {
+      const cached = await cache.match(request);
+      if (cached) return cached;
+    }
+
     const [clan, user] = await Promise.all([
       fetchAllPages("clan-leaderboard/index-v2", leagueId, calculatedAt),
       fetchAllPages("user-leaderboard/index", leagueId, calculatedAt)
     ]);
-    return json({
+    const response = json({
       generatedAt: new Date().toISOString(),
       calculatedAt,
       leagueId,
       source: "historical GoMining API",
       clan,
       user
-    });
+    }, 200, cacheHeaders(calculatedAt));
+    if (cache) {
+      await cache.put(request, response.clone());
+    }
+    return response;
   } catch (error) {
     return json({ error: error.message || "Could not fetch historical Miner Wars data" }, 502);
   }
