@@ -1,6 +1,6 @@
 # GoMining Miner Wars Calculator
 
-Static Miner Wars vs solo mining calculator for the current Tuesday-to-Tuesday UTC cycle.
+Static Miner Wars vs solo mining calculator for Tuesday-to-Tuesday UTC cycles.
 
 ## Cloudflare Pages
 
@@ -16,6 +16,9 @@ window.MINER_WARS_PLAYER_CACHE_BASE = "https://<snapshot-host>/v1/gomining";
 ```
 
 The calculator will try that endpoint first and fall back to the bundled JSON if the endpoint is unavailable.
+
+Past-cycle loading uses the Cloudflare Pages Function at `/api/miner-wars-history`.
+Cycle 148 is anchored to Tuesday 2026-06-16 00:00 UTC; later/current cycle numbers are derived from that anchor.
 
 ## Snapshot Refresh
 
@@ -44,6 +47,7 @@ This writes one `gomining-miner-wars-players-league-<id>.json` file per league. 
 - `index.html` - calculator
 - `gomining-miner-wars-help.html` - help page
 - `config.js` - optional public snapshot endpoint
+- `functions/api/miner-wars-history.js` - same-origin historical leaderboard proxy
 - `gomining-miner-wars-live.json` - fallback snapshot
 - `scripts/update_gomining_miner_wars_live_snapshot.py` - snapshot refresh script
 - `scripts/update_gomining_miner_wars_player_cache.py` - slower full player search cache refresh script

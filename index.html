@@ -709,6 +709,10 @@
                 <select id="leagueId"></select>
               </div>
               <div class="field">
+                <label for="cycleNumber">Cycle</label>
+                <select id="cycleNumber"></select>
+              </div>
+              <div class="field">
                 <label for="clanSearch">Clan search</label>
                 <div class="search-control">
                   <input id="clanSearch" type="text" placeholder="optional" autocomplete="off" aria-autocomplete="list" aria-controls="clanSearchSuggestions">
@@ -871,8 +875,12 @@
     const GOMINING_API = "https://api.gomining.com/api/nft-game";
     const SNAPSHOT_API = window.MINER_WARS_SNAPSHOT_API || "";
     const PLAYER_CACHE_BASE = (window.MINER_WARS_PLAYER_CACHE_BASE || "").replace(/\/$/, "");
+    const HISTORY_API = window.MINER_WARS_HISTORY_API || "/api/miner-wars-history";
     const SEARCH_CACHE_MAX_AGE_MS = 5 * 60 * 1000;
     const COINGECKO_PRICE_API = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,gmt-token&vs_currencies=usd&include_last_updated_at=true";
+    const CYCLE_ANCHOR_NUMBER = 148;
+    const CYCLE_ANCHOR_START_UTC = Date.UTC(2026, 5, 16);
+    const MIN_CYCLE_NUMBER = 1;
     const LEAGUES = [
       ["Odyssey", 1],
       ["Eclipse", 2],
@@ -880,7 +888,7 @@
       ...Array.from({ length: 26 }, (_, index) => [`Dune ${toRoman(index + 1)}`, index + 5])
     ];
     const ids = [
-      "leagueId", "clanSearch", "playerSearch",
+      "leagueId", "cycleNumber", "clanSearch", "playerSearch",
       "powerTh", "listedWth", "leagueWth", "kwhUsd", "maintenanceDiscountPct", "serviceUsdThDay",
       "btcUsd", "satsThDay", "cycleElapsed",
       "clanBlocksWon", "btcBlockSize", "clanSharePct", "myClanTh", "totalClanTh", "rewardBtc",
@@ -902,6 +910,7 @@
       rewardEstimate: "Estimate BTC reward from clan block wins, BTC block size, and your share of clan TH.",
       rewardActual: "Use an actual BTC reward value instead of the block estimate.",
       leagueId: "League to pull public Miner Wars leaderboard values from. Dune numbering uses roman numerals.",
+      cycleNumber: "Miner Wars cycle to load. Cycle 148 started Tuesday 2026-06-16 00:00 UTC; earlier cycles load near their completed-cycle endpoint.",
       clanSearch: "Optional text to match a clan name. When matched, autofill sets clan blocks won and clan total TH.",
       playerSearch: "Optional text to match a player alias. When matched, autofill sets personal blocks won and player TH.",
       powerTh: "Your Miner Wars cycle power in terahashes.",
@@ -962,6 +971,17 @@
     function populateLeagueOptions() {
       $("leagueId").innerHTML = LEAGUES.map(([name, id]) => `<option value="${id}">${name}</option>`).join("");
       $("leagueId").value = "19";
+    }
+
+    function populateCycleOptions() {
+      const current = currentCycleNumber();
+      const options = [];
+      for (let cycle = current; cycle >= Math.max(MIN_CYCLE_NUMBER, current - 52); cycle -= 1) {
+        const label = cycle === current ? `Cycle ${cycle} (current)` : `Cycle ${cycle}`;
+        options.push(`<option value="${cycle}">${label}</option>`);
+      }
+      $("cycleNumber").innerHTML = options.join("");
+      $("cycleNumber").value = String(current);
     }
 
     function applyTooltips() {
@@ -1028,18 +1048,59 @@
       return { start: new Date(start), end: new Date(end) };
     }
 
+    function currentCycleNumber(now = new Date()) {
+      const { start } = cycleBounds(now);
+      return CYCLE_ANCHOR_NUMBER + Math.floor((start.getTime() - CYCLE_ANCHOR_START_UTC) / (7 * MS_DAY));
+    }
+
+    function selectedCycleNumber() {
+      const current = currentCycleNumber();
+      return Number.parseInt($("cycleNumber")?.value || String(current), 10) || current;
+    }
+
+    function cycleBoundsForNumber(cycleNumber) {
+      const offset = cycleNumber - CYCLE_ANCHOR_NUMBER;
+      const start = CYCLE_ANCHOR_START_UTC + offset * 7 * MS_DAY;
+      return { start: new Date(start), end: new Date(start + 7 * MS_DAY) };
+    }
+
+    function selectedCycleBounds(now = new Date()) {
+      const cycleNumber = selectedCycleNumber();
+      if (cycleNumber === currentCycleNumber(now)) return cycleBounds(now);
+      return cycleBoundsForNumber(cycleNumber);
+    }
+
+    function selectedCycleCalculatedAt(now = new Date()) {
+      const cycleNumber = selectedCycleNumber();
+      const { start, end } = cycleBoundsForNumber(cycleNumber);
+      if (cycleNumber === currentCycleNumber(now)) return now.toISOString();
+      const cycleEnd = end.getTime() - 1000;
+      return new Date(Math.max(start.getTime(), Math.min(cycleEnd, now.getTime()))).toISOString();
+    }
+
+    function selectedCycleCacheKey(leagueId) {
+      return `${selectedCycleNumber()}:${leagueId}`;
+    }
+
+    function selectedCycleIsCurrent() {
+      return selectedCycleNumber() === currentCycleNumber();
+    }
+
     function updateClock() {
       const now = new Date();
-      const { start, end } = cycleBounds(now);
+      const cycleNumber = selectedCycleNumber();
+      const { start, end } = selectedCycleBounds(now);
       const remainingMs = Math.max(0, end.getTime() - now.getTime());
-      const elapsedDays = Math.max(0, (now.getTime() - start.getTime()) / MS_DAY);
+      const elapsedDays = Math.max(0, Math.min(7, (Math.min(now.getTime(), end.getTime()) - start.getTime()) / MS_DAY));
       const days = Math.floor(remainingMs / MS_DAY);
       const hours = Math.floor((remainingMs % MS_DAY) / (60 * 60 * 1000));
       const minutes = Math.floor((remainingMs % (60 * 60 * 1000)) / (60 * 1000));
       const seconds = Math.floor((remainingMs % (60 * 1000)) / 1000);
       $("cycleEnd").textContent = end.toISOString().replace(".000Z", " UTC");
       $("elapsedText").textContent = `${fmtNumber(elapsedDays, 2)} of 7.00 days`;
-      $("countdown").textContent = `${days}d ${String(hours).padStart(2, "0")}h ${String(minutes).padStart(2, "0")}m ${String(seconds).padStart(2, "0")}s`;
+      $("countdown").textContent = cycleNumber === currentCycleNumber(now)
+        ? `${days}d ${String(hours).padStart(2, "0")}h ${String(minutes).padStart(2, "0")}m ${String(seconds).padStart(2, "0")}s`
+        : `${start.toISOString().slice(0, 10)} to ${end.toISOString().slice(0, 10)}`;
     }
 
     function metric(label, value, tone = "") {
@@ -1075,8 +1136,9 @@
 
     function calculate() {
       const now = new Date();
-      const { start } = cycleBounds(now);
-      const autoElapsed = Math.max(0.01, Math.min(7, (now.getTime() - start.getTime()) / MS_DAY));
+      const { start, end } = selectedCycleBounds(now);
+      const elapsedMs = Math.min(now.getTime(), end.getTime()) - start.getTime();
+      const autoElapsed = Math.max(0.01, Math.min(7, elapsedMs / MS_DAY));
       const elapsedOverride = numberValue("cycleElapsed", NaN);
       const elapsedDays = Number.isFinite(elapsedOverride) && elapsedOverride > 0 ? Math.min(7, elapsedOverride) : autoElapsed;
       const factor = inputMode === "todate" ? 7 / elapsedDays : 1;
@@ -1294,6 +1356,7 @@
     }
 
     async function fetchSnapshotLeagueData(leagueId) {
+      if (!selectedCycleIsCurrent()) throw new Error("Cached current-cycle data is not used for past cycles");
       const snapshotUrls = SNAPSHOT_API ? [SNAPSHOT_API, "gomining-miner-wars-live.json"] : ["gomining-miner-wars-live.json"];
       let payload = null;
       let lastError = null;
@@ -1318,6 +1381,11 @@
     }
 
     async function fetchCurrentLeagueData(leagueId, calculatedAt) {
+      try {
+        return await fetchHistoryProxyLeagueData(leagueId, calculatedAt);
+      } catch (_) {
+        // Fall back to direct API for local/dev contexts where the same-origin proxy is unavailable.
+      }
       const [clanData, userData] = await Promise.all([
         fetchAllLeaderboardPages("clan-leaderboard/index-v2", leagueId, calculatedAt),
         fetchAllLeaderboardPages("user-leaderboard/index", leagueId, calculatedAt)
@@ -1325,8 +1393,28 @@
       return { clanData, userData, source: "live GoMining API" };
     }
 
+    async function fetchHistoryProxyLeagueData(leagueId, calculatedAt) {
+      if (!HISTORY_API) throw new Error("No history API configured");
+      const url = new URL(HISTORY_API, window.location.href);
+      url.searchParams.set("leagueId", String(leagueId));
+      url.searchParams.set("calculatedAt", calculatedAt);
+      const response = await fetch(url.toString(), { cache: "no-store" });
+      if (!response.ok) throw new Error(`Historical league data returned ${response.status}`);
+      const payload = await response.json();
+      if (!payload || !payload.clan || !payload.user) {
+        throw new Error("Historical league data returned no leaderboard data");
+      }
+      return {
+        clanData: payload.clan,
+        userData: payload.user,
+        source: payload.source || "historical GoMining API"
+      };
+    }
+
     async function fetchPlayerCacheData(leagueId) {
-      const cached = playerCache.get(leagueId);
+      if (!selectedCycleIsCurrent()) throw new Error("Cached current-cycle players are not used for past cycles");
+      const cacheKey = selectedCycleCacheKey(leagueId);
+      const cached = playerCache.get(cacheKey);
       if (cached && Date.now() - cached.fetchedAt < SEARCH_CACHE_MAX_AGE_MS) return cached.payload;
       const fileName = `gomining-miner-wars-players-league-${leagueId}.json`;
       const urls = PLAYER_CACHE_BASE ? [`${PLAYER_CACHE_BASE}/${fileName}`, fileName] : [fileName];
@@ -1339,7 +1427,7 @@
           if (!payload || Number(payload.leagueId) !== Number(leagueId) || !payload.user) {
             throw new Error("Cached player data did not match the selected league");
           }
-          playerCache.set(leagueId, { payload, fetchedAt: Date.now() });
+          playerCache.set(cacheKey, { payload, fetchedAt: Date.now() });
           return payload;
         } catch (error) {
           lastError = error;
@@ -1487,15 +1575,22 @@
     }
 
     async function getLeagueSearchRows(leagueId) {
-      const cached = leagueSearchCache.get(leagueId);
+      const cacheKey = selectedCycleCacheKey(leagueId);
+      const cached = leagueSearchCache.get(cacheKey);
       if (cached && Date.now() - cached.fetchedAt < SEARCH_CACHE_MAX_AGE_MS) return cached.rows;
-      const { clanData, userData } = await fetchSnapshotLeagueData(leagueId);
+      let source = {};
+      try {
+        source = await fetchSnapshotLeagueData(leagueId);
+      } catch (_) {
+        source = await fetchCurrentLeagueData(leagueId, selectedCycleCalculatedAt());
+      }
+      const { clanData, userData } = source;
       const enhancedUserData = await enhanceUserDataWithPlayerCache(leagueId, userData);
       const rows = {
         clans: getClanRows(clanData),
         players: enhancedUserData.participants || []
       };
-      leagueSearchCache.set(leagueId, { rows, fetchedAt: Date.now() });
+      leagueSearchCache.set(cacheKey, { rows, fetchedAt: Date.now() });
       return rows;
     }
 
@@ -1596,10 +1691,12 @@
       button.textContent = "Autofilling...";
       setLiveStatus("Fetching public Miner Wars leaderboard data...");
       try {
-        const calculatedAt = new Date().toISOString();
+        const calculatedAt = selectedCycleCalculatedAt();
+        const cycleNumber = selectedCycleNumber();
         const leagueId = Number.parseInt($("leagueId").value, 10);
-        playerCache.delete(leagueId);
-        leagueSearchCache.delete(leagueId);
+        const cacheKey = selectedCycleCacheKey(leagueId);
+        playerCache.delete(cacheKey);
+        leagueSearchCache.delete(cacheKey);
         let source = "";
         let clanData;
         let userData;
@@ -1661,7 +1758,8 @@
           clanMatch ? `clan ${clanMatch.clan?.name || clanMatch.name}` : null,
           playerMatch ? `player ${playerMatch.user?.alias || "matched"}` : null
         ].filter(Boolean).join("; ");
-        setLiveStatus(filled ? `Autofilled from ${source}: ${filled}.` : `Autofilled league block sizes from ${source}; add clan/player search text for block wins.`, "good");
+        const cycleText = `cycle ${cycleNumber}`;
+        setLiveStatus(filled ? `Autofilled ${cycleText} from ${source}: ${filled}.` : `Autofilled ${cycleText} league block sizes from ${source}; add clan/player search text for block wins.`, "good");
         rewardMode = "estimate";
         costMode = "estimate";
         updateRewardButtons();
@@ -1678,6 +1776,7 @@
     function loadLatestExample() {
       clearAutofillMarks();
       $("leagueId").value = "19";
+      $("cycleNumber").value = String(currentCycleNumber());
       $("clanSearch").value = "";
       $("playerSearch").value = "";
       clearSearchMatchInfo();
@@ -1709,6 +1808,7 @@
       updateModeButtons();
       updateCostButtons();
       updateRewardButtons();
+      updateClock();
       calculate();
     }
 
@@ -1782,11 +1882,12 @@
         updateClanShareFromTh();
         markAutofilled("clanSharePct", false);
       }
-      if (event.currentTarget.id === "clanSearch" || event.currentTarget.id === "playerSearch" || event.currentTarget.id === "leagueId") {
+      if (event.currentTarget.id === "clanSearch" || event.currentTarget.id === "playerSearch" || event.currentTarget.id === "leagueId" || event.currentTarget.id === "cycleNumber") {
         clearSearchMatchInfo();
         if (event.currentTarget.id === "clanSearch") updateSearchSuggestions("clan");
         if (event.currentTarget.id === "playerSearch") updateSearchSuggestions("player");
-        if (event.currentTarget.id === "leagueId") {
+        if (event.currentTarget.id === "leagueId" || event.currentTarget.id === "cycleNumber") {
+          updateClock();
           hideAllSearchSuggestions();
           preloadSelectedLeagueSearchRows();
           if ($("clanSearch").value.trim().length >= 2) updateSearchSuggestions("clan");
@@ -1803,6 +1904,7 @@
     });
 
     populateLeagueOptions();
+    populateCycleOptions();
     applyTooltips();
     applyTheme();
     updateClock();
