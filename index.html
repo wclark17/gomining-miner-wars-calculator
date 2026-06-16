@@ -1200,12 +1200,7 @@
       const old = button.textContent;
       button.textContent = "Fetching...";
       try {
-        const response = await fetch("https://api.blockchain.info/charts/difficulty?timespan=10days&format=json");
-        const payload = await response.json();
-        const values = payload.values || [];
-        const latest = values[values.length - 1];
-        if (!latest) throw new Error("No difficulty values returned");
-        const difficulty = latest.y;
+        const difficulty = await fetchCurrentDifficulty();
         const sats = 86400 * 1e12 * 3.125 / (difficulty * Math.pow(2, 32)) * 100000000;
         setAutofilledValue("satsThDay", String(Math.round(sats)));
         calculate();
@@ -1215,6 +1210,39 @@
         button.textContent = old;
         button.disabled = false;
       }
+    }
+
+    async function fetchCurrentDifficulty() {
+      const sources = [
+        {
+          url: "https://mempool.space/api/v1/mining/hashrate/3d",
+          parse(payload) {
+            return payload.currentDifficulty;
+          }
+        },
+        {
+          url: "https://api.blockchain.info/charts/difficulty?timespan=10days&format=json",
+          parse(payload) {
+            const values = payload.values || [];
+            const latest = values[values.length - 1];
+            return latest && latest.y;
+          }
+        }
+      ];
+      const errors = [];
+      for (const source of sources) {
+        try {
+          const response = await fetch(source.url, { cache: "no-store" });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const payload = await response.json();
+          const difficulty = Number(source.parse(payload));
+          if (Number.isFinite(difficulty) && difficulty > 0) return difficulty;
+          throw new Error("No difficulty value returned");
+        } catch (error) {
+          errors.push(`${source.url}: ${error.message}`);
+        }
+      }
+      throw new Error(errors.join("; "));
     }
 
     async function fetchMarketPrices(options = {}) {
