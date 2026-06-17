@@ -123,7 +123,7 @@
 
     table {
       width: 100%;
-      min-width: 860px;
+      min-width: 960px;
       border-collapse: collapse;
     }
 
@@ -240,6 +240,7 @@
           <tr>
             <th>Cycle</th>
             <th>League</th>
+            <th>League TH</th>
             <th>BTC Prize Pool</th>
             <th>Clan Blocks</th>
             <th>BTC / Block</th>
@@ -251,7 +252,7 @@
         </thead>
         <tbody id="cycleRows">
           <tr>
-            <td colspan="9" class="muted">Loading...</td>
+            <td colspan="10" class="muted">Loading...</td>
           </tr>
         </tbody>
       </table>
@@ -388,12 +389,14 @@
         const gmtFund = Number(row.user.gmtFund || 0);
         const btcBlock = clanBlocks > 0 ? btcFund / clanBlocks : NaN;
         const gmtBlock = userBlocks > 0 ? gmtFund / userBlocks : NaN;
+        const totalPower = Number(row.clan.totalPower);
         const wth = Number(row.clan.weightedEnergyEfficiencyPerTh);
 
         return `
           <tr>
             <td>${cycleLabel(row.cycleNumber, row.calculatedAt)}</td>
             <td>${escapeHtml(league)}</td>
+            <td>${Number.isFinite(totalPower) ? fmt(totalPower, 2) : "-"}</td>
             <td>${fmtBtc(btcFund)} BTC</td>
             <td>${fmtBlocks(clanBlocks)}</td>
             <td>${fmtBtc(btcBlock)} BTC</td>
@@ -425,14 +428,14 @@
       const cycles = [current, current - 1];
       button.disabled = true;
       setStatus("Loading cycle data...");
-      $("cycleRows").innerHTML = '<tr><td colspan="9" class="muted">Loading...</td></tr>';
+      $("cycleRows").innerHTML = '<tr><td colspan="10" class="muted">Loading...</td></tr>';
 
       try {
         const rows = await Promise.all(cycles.map(cycle => fetchCycle(leagueId, cycle)));
         renderRows(rows, leagueId);
         setStatus(`Loaded ${LEAGUES.get(leagueId) || `League ${leagueId}`} cycles ${cycles.join(" and ")}.`);
       } catch (error) {
-        $("cycleRows").innerHTML = '<tr><td colspan="9" class="muted">No data loaded.</td></tr>';
+        $("cycleRows").innerHTML = '<tr><td colspan="10" class="muted">No data loaded.</td></tr>';
         setStatus(error.message || "Could not load cycle data.", true);
       } finally {
         button.disabled = false;
