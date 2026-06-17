@@ -1,6 +1,6 @@
 const API_ROOT = "https://api.gomining.com/api/nft-game";
 const LIMIT = 1;
-const CONCURRENCY = 4;
+const CONCURRENCY = 2;
 
 const ROMAN = [
   "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X",
@@ -80,6 +80,20 @@ async function fetchLeagueSummary(leagueId, calculatedAt) {
   };
 }
 
+async function fetchLeagueSummarySafe(leagueId, calculatedAt) {
+  try {
+    return { summary: await fetchLeagueSummary(leagueId, calculatedAt) };
+  } catch (error) {
+    return {
+      error: {
+        leagueId,
+        leagueName: LEAGUES.get(leagueId) || `League ${leagueId}`,
+        message: error.message || "Could not fetch league summary"
+      }
+    };
+  }
+}
+
 async function mapWithLimit(values, limit, mapper) {
   const results = new Array(values.length);
   let next = 0;
@@ -125,12 +139,24 @@ export async function onRequestGet({ request }) {
       if (cached) return cached;
     }
 
-    const summaries = await mapWithLimit(leagueIds, CONCURRENCY, leagueId => fetchLeagueSummary(leagueId, calculatedAt));
+    const results = await mapWithLimit(leagueIds, CONCURRENCY, leagueId => fetchLeagueSummarySafe(leagueId, calculatedAt));
+    const summaries = results.map(result => result.summary).filter(Boolean);
+    const errors = Object.fromEntries(
+      results
+        .map(result => result.error)
+        .filter(Boolean)
+        .map(error => [String(error.leagueId), error])
+    );
+    if (!summaries.length) {
+      const messages = Object.values(errors).map(error => error.message).filter(Boolean);
+      throw new Error(messages[0] || "No league summaries returned");
+    }
     const response = json({
       generatedAt: new Date().toISOString(),
       calculatedAt,
       source: "GoMining API summary",
-      summaries
+      summaries,
+      errors
     }, 200, cacheHeaders(calculatedAt));
     if (cache) {
       await cache.put(request, response.clone());
