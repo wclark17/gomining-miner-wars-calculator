@@ -354,7 +354,7 @@
       </table>
     </div>
 
-    <p class="footer-note">Selected league view shows current and previous cycles. All leagues view shows every league for the selected cycle. Current cycle rows are cycle-to-date; completed cycles use the final second of the cycle.</p>
+    <p class="footer-note">Selected league view shows every cached cycle for one league. All leagues view shows every non-empty league for the selected cycle. Current cycle rows use the latest cached snapshot; completed cycles use the final second of the cycle.</p>
   </main>
 
   <script>
@@ -493,6 +493,13 @@
       return day?.summaries?.find(summary => Number(summary.leagueId) === Number(row.leagueId)) || null;
     }
 
+    function hasData(row) {
+      return Number(row.blocks || 0) > 0
+        || Number(row.totalPower || 0) > 0
+        || Number(row.btcFund || 0) > 0
+        || Number(row.gmtFund || 0) > 0;
+    }
+
     async function cachedSummaries(leagueId, cycleNumber) {
       const cache = await loadSummaryCache();
       const cycle = cache?.cycles?.find(item => Number(item.cycleNumber) === Number(cycleNumber));
@@ -501,7 +508,22 @@
         ? cycle.summaries
         : cycle.summaries.filter(summary => Number(summary.leagueId) === Number(leagueId));
       if (!summaries.length) return null;
-      return summaries.map(summary => ({ ...summary, cycleNumber, calculatedAt: cycle.calculatedAt }));
+      return summaries
+        .map(summary => ({ ...summary, cycleNumber, calculatedAt: cycle.calculatedAt }))
+        .filter(hasData);
+    }
+
+    async function cachedCyclesForLeague(leagueId) {
+      const cache = await loadSummaryCache();
+      const cycles = Array.isArray(cache?.cycles) ? cache.cycles : [];
+      return cycles
+        .map(cycle => {
+          const summary = cycle.summaries?.find(item => Number(item.leagueId) === Number(leagueId));
+          return summary ? { ...summary, cycleNumber: cycle.cycleNumber, calculatedAt: cycle.calculatedAt } : null;
+        })
+        .filter(Boolean)
+        .filter(hasData)
+        .sort((a, b) => Number(b.cycleNumber) - Number(a.cycleNumber));
     }
 
     async function fetchSummaries(leagueId, cycleNumber) {
@@ -532,8 +554,13 @@
     }
 
     async function renderRows(rows) {
-      const maxRows = await Promise.all(rows.map(dailyMaxFor));
-      $("cycleRows").innerHTML = rows.map((row, index) => {
+      const visibleRows = rows.filter(hasData);
+      if (!visibleRows.length) {
+        $("cycleRows").innerHTML = '<tr><td colspan="11" class="muted">No cycle data available.</td></tr>';
+        return;
+      }
+      const maxRows = await Promise.all(visibleRows.map(dailyMaxFor));
+      $("cycleRows").innerHTML = visibleRows.map((row, index) => {
         const maxRow = maxRows[index];
         return `
         <tr>
@@ -577,12 +604,15 @@
       try {
         if (viewMode === "selected") {
           const leagueId = Number.parseInt($("leagueId").value, 10);
-          const cycles = [current, current - 1];
-          const groups = await Promise.all(cycles.map(cycle => fetchSummaries(leagueId, cycle)));
-          const rows = groups.flat();
+          let rows = await cachedCyclesForLeague(leagueId);
+          if (!rows.length) {
+            const cycles = [current, current - 1];
+            const groups = await Promise.all(cycles.map(cycle => fetchSummaries(leagueId, cycle)));
+            rows = groups.flat();
+          }
           await renderRows(rows);
           const leagueName = LEAGUES.get(leagueId) || `League ${leagueId}`;
-          setStatus(`Loaded ${leagueName} cycles ${cycles.join(" and ")}.`);
+          setStatus(`Loaded ${rows.length} cached cycles for ${leagueName}.`);
         } else {
           const cycleNumber = Number.parseInt($("cycleNumber").value, 10) || current;
           const rows = await fetchSummaries("all", cycleNumber);
