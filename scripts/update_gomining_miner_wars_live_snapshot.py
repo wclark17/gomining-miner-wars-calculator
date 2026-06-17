@@ -19,8 +19,9 @@ MAX_ROWS_PER_LEAGUE = 1000
 FULL_SNAPSHOT_LEAGUES = {19}
 LEAGUES = {
     "1": "Odyssey",
-    "2": "Eclipse",
+    "2": "League 2",
     "3": "Horizon",
+    "4": "Eclipse",
 }
 ROMAN = [
     "I",

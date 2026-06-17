@@ -10,8 +10,9 @@ const ROMAN = [
 
 const LEAGUES = new Map([
   [1, "Odyssey"],
-  [2, "Eclipse"],
+  [2, "League 2"],
   [3, "Horizon"],
+  [4, "Eclipse"],
   ...ROMAN.map((roman, index) => [index + 5, `Dune ${roman}`])
 ]);
 

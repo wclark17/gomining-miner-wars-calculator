@@ -47,7 +47,7 @@ ROMAN = [
     "XXV",
     "XXVI",
 ]
-LEAGUES = {1: "Odyssey", 2: "Eclipse", 3: "Horizon"}
+LEAGUES = {1: "Odyssey", 2: "League 2", 3: "Horizon", 4: "Eclipse"}
 LEAGUES.update({index + 5: f"Dune {roman}" for index, roman in enumerate(ROMAN)})
 
 
