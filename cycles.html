@@ -6,124 +6,194 @@
   <title>Miner Wars Cycles</title>
   <style>
     :root {
-      color-scheme: light;
-      --bg: #f6f7f9;
-      --panel: #ffffff;
-      --text: #16191f;
-      --muted: #5b6472;
-      --line: #dfe4ea;
-      --accent: #146b63;
-      --accent-soft: #e4f3f1;
-      --warn: #8f5a00;
+      color-scheme: dark;
+      --bg: #0e0f1f;
+      --surface: #161828;
+      --surface-2: #211f36;
+      --field: #0a0920;
+      --ink: #ffffff;
+      --muted: #a0a0b5;
+      --line: #2a2a38;
+      --control-line: #3f3d4f;
+      --green: #00f076;
+      --blue: #7540ef;
+      --red: #ff3a44;
+      --amber: #ffbd00;
+      --shadow: 0 16px 34px rgba(0, 0, 0, .28);
+      --focus: rgba(117, 64, 239, .28);
+      --button-surface: #211f36;
+      --summary-surface: #111224;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       background: var(--bg);
-      color: var(--text);
+      color: var(--ink);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
       line-height: 1.45;
     }
 
     main {
-      width: min(1120px, calc(100% - 32px));
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 28px 0 40px;
+      padding: 22px;
     }
 
     header {
       display: flex;
-      gap: 20px;
       align-items: end;
       justify-content: space-between;
-      margin-bottom: 18px;
+      gap: 18px;
+      padding: 12px 0 20px;
+      border-bottom: 1px solid var(--line);
     }
 
     h1 {
       margin: 0;
       font-size: 28px;
       line-height: 1.1;
+      font-weight: 760;
       letter-spacing: 0;
     }
 
-    .subhead {
+    .subtle {
       margin: 8px 0 0;
       color: var(--muted);
-      font-size: 14px;
+      max-width: 760px;
+    }
+
+    .top-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: end;
+    }
+
+    .link-button {
+      display: inline-flex;
+      align-items: center;
+      height: 34px;
+      padding: 0 10px;
+      border: 1px solid var(--control-line);
+      border-radius: 6px;
+      background: var(--button-surface);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
     }
 
     .controls {
-      display: flex;
-      gap: 10px;
+      display: grid;
+      grid-template-columns: 1.25fr repeat(2, minmax(170px, .75fr)) auto;
+      gap: 12px;
       align-items: end;
-      flex-wrap: wrap;
-      justify-content: flex-end;
+      margin-top: 18px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
     }
 
     label {
       display: grid;
-      gap: 5px;
+      gap: 6px;
+      margin: 0;
       color: var(--muted);
-      font-size: 12px;
-      font-weight: 650;
-      text-transform: uppercase;
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 720;
     }
 
     select,
     button {
-      height: 38px;
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      background: var(--panel);
-      color: var(--text);
+      height: 40px;
+      border-radius: 6px;
+      color: var(--ink);
       font: inherit;
-      font-size: 14px;
     }
 
     select {
-      min-width: 180px;
-      padding: 0 34px 0 11px;
+      width: 100%;
+      min-width: 0;
+      padding: 8px 10px;
+      border: 1px solid var(--control-line);
+      background: var(--field);
+      font-variant-numeric: tabular-nums;
+    }
+
+    select:focus,
+    button:focus {
+      border-color: var(--blue);
+      outline: 3px solid var(--focus);
     }
 
     button {
-      padding: 0 14px;
+      border: 1px solid var(--blue);
+      background: var(--blue);
+      color: #fff;
       cursor: pointer;
-      background: var(--accent);
-      border-color: var(--accent);
-      color: white;
-      font-weight: 700;
+      font-weight: 760;
+      padding: 0 15px;
     }
 
     button:disabled {
       cursor: wait;
-      opacity: 0.7;
+      opacity: .72;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      padding: 3px;
+      border: 1px solid var(--control-line);
+      border-radius: 999px;
+      background: var(--surface-2);
+    }
+
+    .segmented button {
+      height: 34px;
+      min-width: 0;
+      padding: 0 12px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .segmented button.active {
+      background: var(--blue);
+      color: #fff;
     }
 
     .status {
       min-height: 22px;
-      margin: 0 0 14px;
+      margin: 14px 0;
       color: var(--muted);
       font-size: 14px;
     }
 
     .status.error {
-      color: #a33122;
+      color: var(--red);
     }
 
     .table-wrap {
       overflow-x: auto;
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: var(--panel);
+      background: var(--surface);
+      box-shadow: var(--shadow);
     }
 
     table {
       width: 100%;
-      min-width: 960px;
+      min-width: 980px;
       border-collapse: collapse;
     }
 
@@ -134,13 +204,14 @@
       text-align: right;
       vertical-align: top;
       white-space: nowrap;
+      font-variant-numeric: tabular-nums;
     }
 
     th {
-      background: #f0f3f5;
+      background: var(--surface-2);
       color: var(--muted);
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 820;
       text-transform: uppercase;
     }
 
@@ -161,12 +232,17 @@
     }
 
     .cycle strong {
+      color: var(--ink);
       font-size: 15px;
     }
 
     .cycle span,
-    .note {
+    .muted,
+    .footer-note {
       color: var(--muted);
+    }
+
+    .cycle span {
       font-size: 12px;
     }
 
@@ -176,39 +252,42 @@
       margin-left: 8px;
       padding: 2px 7px;
       border-radius: 999px;
-      background: var(--accent-soft);
-      color: var(--accent);
+      background: color-mix(in srgb, var(--green) 12%, transparent);
+      color: var(--green);
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 820;
       text-transform: uppercase;
-    }
-
-    .muted {
-      color: var(--muted);
     }
 
     .footer-note {
       margin-top: 12px;
-      color: var(--muted);
       font-size: 13px;
     }
 
-    @media (max-width: 720px) {
+    @media (max-width: 880px) {
       main {
-        width: min(100% - 20px, 1120px);
-        padding-top: 18px;
+        padding: 14px;
       }
 
       header {
-        align-items: stretch;
-        flex-direction: column;
+        display: block;
+      }
+
+      .top-links {
+        justify-content: stretch;
+        margin-top: 14px;
+      }
+
+      .link-button {
+        justify-content: center;
+        flex: 1 1 140px;
       }
 
       .controls {
-        justify-content: stretch;
+        grid-template-columns: 1fr;
       }
 
-      label,
+      .segmented,
       select,
       button {
         width: 100%;
@@ -221,16 +300,32 @@
     <header>
       <div>
         <h1>Miner Wars Cycles</h1>
-        <p class="subhead">Current and previous cycle prize pools, total blocks, and block sizes.</p>
+        <p class="subtle">Prize pools, blocks, block sizes, league TH, and efficiency by cycle.</p>
       </div>
-      <div class="controls">
-        <label>
-          League
-          <select id="leagueId"></select>
-        </label>
-        <button id="refresh" type="button">Refresh</button>
-      </div>
+      <nav class="top-links" aria-label="Miner Wars navigation">
+        <a class="link-button" href="index.html">Calculator</a>
+        <a class="link-button" href="gomining-miner-wars-help.html">Help</a>
+      </nav>
     </header>
+
+    <div class="controls">
+      <label>
+        View
+        <div class="segmented" role="group" aria-label="View mode">
+          <button id="selectedLeagueView" class="active" type="button">Selected league</button>
+          <button id="allLeaguesView" type="button">All leagues</button>
+        </div>
+      </label>
+      <label id="leagueControl">
+        League
+        <select id="leagueId"></select>
+      </label>
+      <label id="cycleControl">
+        Cycle
+        <select id="cycleNumber"></select>
+      </label>
+      <button id="refresh" type="button">Refresh</button>
+    </div>
 
     <p id="status" class="status">Loading cycle data...</p>
 
@@ -242,30 +337,30 @@
             <th>League</th>
             <th>League TH</th>
             <th>BTC Prize Pool</th>
-            <th>Clan Blocks</th>
+            <th>Blocks</th>
             <th>BTC / Block</th>
             <th>GMT Prize Pool</th>
-            <th>User Blocks</th>
             <th>GMT / Block</th>
             <th>Avg W/TH</th>
           </tr>
         </thead>
         <tbody id="cycleRows">
           <tr>
-            <td colspan="10" class="muted">Loading...</td>
+            <td colspan="9" class="muted">Loading...</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <p class="footer-note">Current cycle rows are cycle-to-date. Previous cycle rows use the final second of the cycle as the historical timestamp.</p>
+    <p class="footer-note">Selected league view shows current and previous cycles. All leagues view shows every league for the selected cycle. Current cycle rows are cycle-to-date; completed cycles use the final second of the cycle.</p>
   </main>
 
   <script>
-    const HISTORY_API = window.MINER_WARS_HISTORY_API || "/api/miner-wars-history";
+    const SUMMARY_API = window.MINER_WARS_SUMMARY_API || "/api/miner-wars-cycle-summary";
     const MS_DAY = 24 * 60 * 60 * 1000;
     const CYCLE_ANCHOR_NUMBER = 148;
     const CYCLE_ANCHOR_START_UTC = Date.UTC(2026, 5, 16);
+    const MIN_CYCLE_NUMBER = 1;
     const DEFAULT_LEAGUE_ID = 19;
     const ROMAN = [
       "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X",
@@ -280,10 +375,12 @@
     ]);
 
     const $ = id => document.getElementById(id);
-    const numberFmt = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
     const integerFmt = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
+    const compactFmt = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
+    let viewMode = "selected";
 
     function fmt(value, digits = 2) {
+      if (value === null || value === undefined || value === "") return "-";
       const number = Number(value);
       if (!Number.isFinite(number)) return "-";
       return new Intl.NumberFormat("en-US", {
@@ -293,6 +390,7 @@
     }
 
     function fmtBtc(value) {
+      if (value === null || value === undefined || value === "") return "-";
       const number = Number(value);
       if (!Number.isFinite(number)) return "-";
       return new Intl.NumberFormat("en-US", {
@@ -301,13 +399,8 @@
       }).format(number);
     }
 
-    function fmtGmt(value) {
-      const number = Number(value);
-      if (!Number.isFinite(number)) return "-";
-      return numberFmt.format(number);
-    }
-
     function fmtBlocks(value) {
+      if (value === null || value === undefined || value === "") return "-";
       const number = Number(value);
       if (!Number.isFinite(number)) return "-";
       return integerFmt.format(number);
@@ -350,21 +443,35 @@
       return new Date(Math.max(start.getTime(), Math.min(cycleEnd, now.getTime()))).toISOString();
     }
 
-    async function fetchCycle(leagueId, cycleNumber) {
+    function populateLeagues() {
+      $("leagueId").innerHTML = [...LEAGUES.entries()].map(([id, name]) => (
+        `<option value="${id}">${escapeHtml(name)}</option>`
+      )).join("");
+      $("leagueId").value = String(DEFAULT_LEAGUE_ID);
+    }
+
+    function populateCycles() {
+      const current = currentCycleNumber();
+      const options = [];
+      for (let cycle = current; cycle >= Math.max(MIN_CYCLE_NUMBER, current - 52); cycle -= 1) {
+        const { start, end } = cycleBoundsForNumber(cycle);
+        const label = `${cycle} (${start.toISOString().slice(0, 10)} to ${end.toISOString().slice(0, 10)})`;
+        options.push(`<option value="${cycle}">${escapeHtml(label)}</option>`);
+      }
+      $("cycleNumber").innerHTML = options.join("");
+      $("cycleNumber").value = String(current);
+    }
+
+    async function fetchSummaries(leagueId, cycleNumber) {
       const calculatedAt = cycleCalculatedAt(cycleNumber);
-      const url = new URL(HISTORY_API, window.location.href);
+      const url = new URL(SUMMARY_API, window.location.href);
       url.searchParams.set("leagueId", String(leagueId));
       url.searchParams.set("calculatedAt", calculatedAt);
       const response = await fetch(url.toString(), { cache: "no-store" });
       if (!response.ok) throw new Error(`Cycle ${cycleNumber} returned ${response.status}`);
       const payload = await response.json();
-      if (!payload.clan || !payload.user) throw new Error(`Cycle ${cycleNumber} returned no leaderboard data`);
-      return {
-        cycleNumber,
-        calculatedAt,
-        clan: payload.clan,
-        user: payload.user
-      };
+      if (!payload || !Array.isArray(payload.summaries)) throw new Error(`Cycle ${cycleNumber} returned no summary data`);
+      return payload.summaries.map(summary => ({ ...summary, cycleNumber, calculatedAt }));
     }
 
     function cycleLabel(cycleNumber, calculatedAt) {
@@ -380,33 +487,20 @@
       `;
     }
 
-    function renderRows(rows, leagueId) {
-      const league = LEAGUES.get(leagueId) || `League ${leagueId}`;
-      $("cycleRows").innerHTML = rows.map(row => {
-        const clanBlocks = Number(row.clan.totalMinedBlocks || 0);
-        const btcFund = Number(row.clan.btcFund || 0);
-        const userBlocks = Number(row.user.totalMinedBlocks || 0);
-        const gmtFund = Number(row.user.gmtFund || 0);
-        const btcBlock = clanBlocks > 0 ? btcFund / clanBlocks : NaN;
-        const gmtBlock = userBlocks > 0 ? gmtFund / userBlocks : NaN;
-        const totalPower = Number(row.clan.totalPower);
-        const wth = Number(row.clan.weightedEnergyEfficiencyPerTh);
-
-        return `
-          <tr>
-            <td>${cycleLabel(row.cycleNumber, row.calculatedAt)}</td>
-            <td>${escapeHtml(league)}</td>
-            <td>${Number.isFinite(totalPower) ? fmt(totalPower, 2) : "-"}</td>
-            <td>${fmtBtc(btcFund)} BTC</td>
-            <td>${fmtBlocks(clanBlocks)}</td>
-            <td>${fmtBtc(btcBlock)} BTC</td>
-            <td>${fmtGmt(gmtFund)} GMT</td>
-            <td>${fmtBlocks(userBlocks)}</td>
-            <td>${fmt(gmtBlock, 4)} GMT</td>
-            <td>${Number.isFinite(wth) ? fmt(wth, 2) : "-"}</td>
-          </tr>
-        `;
-      }).join("");
+    function renderRows(rows) {
+      $("cycleRows").innerHTML = rows.map(row => `
+        <tr>
+          <td>${cycleLabel(row.cycleNumber, row.calculatedAt)}</td>
+          <td>${escapeHtml(row.leagueName || `League ${row.leagueId}`)}</td>
+          <td>${fmt(row.totalPower, 2)}</td>
+          <td>${fmtBtc(row.btcFund)} BTC</td>
+          <td>${fmtBlocks(row.blocks)}</td>
+          <td>${fmtBtc(row.btcBlockSize)} BTC</td>
+          <td>${compactFmt.format(Number(row.gmtFund || 0))} GMT</td>
+          <td>${fmt(row.gmtBlockSize, 4)} GMT</td>
+          <td>${fmt(row.weightedEnergyEfficiencyPerTh, 2)}</td>
+        </tr>
+      `).join("");
     }
 
     function setStatus(message, error = false) {
@@ -414,38 +508,54 @@
       $("status").classList.toggle("error", error);
     }
 
-    function populateLeagues() {
-      $("leagueId").innerHTML = [...LEAGUES.entries()].map(([id, name]) => (
-        `<option value="${id}">${escapeHtml(name)}</option>`
-      )).join("");
-      $("leagueId").value = String(DEFAULT_LEAGUE_ID);
+    function setViewMode(mode) {
+      viewMode = mode;
+      $("selectedLeagueView").classList.toggle("active", mode === "selected");
+      $("allLeaguesView").classList.toggle("active", mode === "all");
+      $("leagueControl").style.display = mode === "selected" ? "" : "none";
+      $("cycleControl").style.display = mode === "all" ? "" : "none";
+      refresh();
     }
 
     async function refresh() {
       const button = $("refresh");
-      const leagueId = Number.parseInt($("leagueId").value, 10);
       const current = currentCycleNumber();
-      const cycles = [current, current - 1];
       button.disabled = true;
       setStatus("Loading cycle data...");
-      $("cycleRows").innerHTML = '<tr><td colspan="10" class="muted">Loading...</td></tr>';
+      $("cycleRows").innerHTML = '<tr><td colspan="9" class="muted">Loading...</td></tr>';
 
       try {
-        const rows = await Promise.all(cycles.map(cycle => fetchCycle(leagueId, cycle)));
-        renderRows(rows, leagueId);
-        setStatus(`Loaded ${LEAGUES.get(leagueId) || `League ${leagueId}`} cycles ${cycles.join(" and ")}.`);
+        if (viewMode === "selected") {
+          const leagueId = Number.parseInt($("leagueId").value, 10);
+          const cycles = [current, current - 1];
+          const groups = await Promise.all(cycles.map(cycle => fetchSummaries(leagueId, cycle)));
+          const rows = groups.flat();
+          renderRows(rows);
+          const leagueName = LEAGUES.get(leagueId) || `League ${leagueId}`;
+          setStatus(`Loaded ${leagueName} cycles ${cycles.join(" and ")}.`);
+        } else {
+          const cycleNumber = Number.parseInt($("cycleNumber").value, 10) || current;
+          const rows = await fetchSummaries("all", cycleNumber);
+          renderRows(rows);
+          setStatus(`Loaded all leagues for cycle ${cycleNumber}.`);
+        }
       } catch (error) {
-        $("cycleRows").innerHTML = '<tr><td colspan="10" class="muted">No data loaded.</td></tr>';
+        $("cycleRows").innerHTML = '<tr><td colspan="9" class="muted">No data loaded.</td></tr>';
         setStatus(error.message || "Could not load cycle data.", true);
       } finally {
         button.disabled = false;
       }
     }
 
+    $("selectedLeagueView").addEventListener("click", () => setViewMode("selected"));
+    $("allLeaguesView").addEventListener("click", () => setViewMode("all"));
     $("refresh").addEventListener("click", refresh);
     $("leagueId").addEventListener("change", refresh);
+    $("cycleNumber").addEventListener("change", refresh);
+
     populateLeagues();
-    refresh();
+    populateCycles();
+    setViewMode("selected");
   </script>
 </body>
 </html>
