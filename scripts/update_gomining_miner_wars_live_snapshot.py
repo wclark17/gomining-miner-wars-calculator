@@ -50,6 +50,7 @@ ROMAN = [
     "XXIV",
     "XXV",
     "XXVI",
+    "XXVII",
 ]
 for index, roman in enumerate(ROMAN, start=1):
     LEAGUES[str(index + 4)] = f"Dune {roman}"

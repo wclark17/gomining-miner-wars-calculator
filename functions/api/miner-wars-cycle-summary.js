@@ -2,18 +2,31 @@ const API_ROOT = "https://api.gomining.com/api/nft-game";
 const LIMIT = 1;
 const CONCURRENCY = 2;
 
-const ROMAN = [
-  "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X",
-  "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX",
-  "XXI", "XXII", "XXIII", "XXIV", "XXV", "XXVI"
-];
+const MIN_DUNE_COUNT = 27;
+
+function toRoman(value) {
+  const table = [
+    [1000, "M"], [900, "CM"], [500, "D"], [400, "CD"],
+    [100, "C"], [90, "XC"], [50, "L"], [40, "XL"],
+    [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]
+  ];
+  let remaining = value;
+  let result = "";
+  for (const [number, symbol] of table) {
+    while (remaining >= number) {
+      result += symbol;
+      remaining -= number;
+    }
+  }
+  return result;
+}
 
 const LEAGUES = new Map([
   [1, "Odyssey"],
   [2, "League 2"],
   [3, "Horizon"],
   [4, "Eclipse"],
-  ...ROMAN.map((roman, index) => [index + 5, `Dune ${roman}`])
+  ...Array.from({ length: MIN_DUNE_COUNT }, (_, index) => [index + 5, `Dune ${toRoman(index + 1)}`])
 ]);
 
 const baseHeaders = {

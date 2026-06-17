@@ -366,17 +366,13 @@
     const CYCLE_ANCHOR_START_UTC = Date.UTC(2026, 5, 16);
     const MIN_CYCLE_NUMBER = 1;
     const DEFAULT_LEAGUE_ID = 19;
-    const ROMAN = [
-      "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X",
-      "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX",
-      "XXI", "XXII", "XXIII", "XXIV", "XXV", "XXVI"
-    ];
-    const LEAGUES = new Map([
+    const MIN_DUNE_COUNT = 27;
+    let LEAGUES = new Map([
       [1, "Odyssey"],
       [2, "League 2"],
       [3, "Horizon"],
       [4, "Eclipse"],
-      ...ROMAN.map((roman, index) => [index + 5, `Dune ${roman}`])
+      ...Array.from({ length: MIN_DUNE_COUNT }, (_, index) => [index + 5, `Dune ${toRoman(index + 1)}`])
     ]);
 
     const $ = id => document.getElementById(id);
@@ -423,6 +419,23 @@
       }[char]));
     }
 
+    function toRoman(value) {
+      const table = [
+        [1000, "M"], [900, "CM"], [500, "D"], [400, "CD"],
+        [100, "C"], [90, "XC"], [50, "L"], [40, "XL"],
+        [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]
+      ];
+      let remaining = value;
+      let result = "";
+      for (const [number, symbol] of table) {
+        while (remaining >= number) {
+          result += symbol;
+          remaining -= number;
+        }
+      }
+      return result;
+    }
+
     function cycleBounds(now = new Date()) {
       const todayUtc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
       const day = now.getUTCDay();
@@ -450,7 +463,13 @@
       return new Date(Math.max(start.getTime(), Math.min(cycleEnd, now.getTime()))).toISOString();
     }
 
-    function populateLeagues() {
+    async function populateLeagues() {
+      const cache = await loadSummaryCache();
+      if (Array.isArray(cache?.leagues) && cache.leagues.length) {
+        LEAGUES = new Map(cache.leagues
+          .filter(league => Number.isInteger(Number(league.leagueId)))
+          .map(league => [Number(league.leagueId), league.leagueName || `League ${league.leagueId}`]));
+      }
       $("leagueId").innerHTML = [...LEAGUES.entries()].map(([id, name]) => (
         `<option value="${id}">${escapeHtml(name)}</option>`
       )).join("");
@@ -634,9 +653,13 @@
     $("leagueId").addEventListener("change", refresh);
     $("cycleNumber").addEventListener("change", refresh);
 
-    populateLeagues();
-    populateCycles();
-    setViewMode("selected");
+    async function bootstrap() {
+      await populateLeagues();
+      populateCycles();
+      setViewMode("selected");
+    }
+
+    bootstrap();
   </script>
 </body>
 </html>
