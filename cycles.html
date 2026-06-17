@@ -193,7 +193,7 @@
 
     table {
       width: 100%;
-      min-width: 980px;
+      min-width: 1180px;
       border-collapse: collapse;
     }
 
@@ -339,14 +339,16 @@
             <th>BTC Prize Pool</th>
             <th>Blocks</th>
             <th>BTC / Block</th>
+            <th>Daily Max BTC / Block</th>
             <th>GMT Prize Pool</th>
             <th>GMT / Block</th>
+            <th>Daily Max GMT / Block</th>
             <th>Avg W/TH</th>
           </tr>
         </thead>
         <tbody id="cycleRows">
           <tr>
-            <td colspan="9" class="muted">Loading...</td>
+            <td colspan="11" class="muted">Loading...</td>
           </tr>
         </tbody>
       </table>
@@ -358,6 +360,7 @@
   <script>
     const SUMMARY_API = window.MINER_WARS_SUMMARY_API || "/api/miner-wars-cycle-summary";
     const SUMMARY_CACHE_URL = window.MINER_WARS_SUMMARY_CACHE_URL || "data/miner-wars-cycle-summaries.json";
+    const DAILY_MAX_CACHE_URL = window.MINER_WARS_DAILY_MAX_CACHE_URL || "data/miner-wars-daily-block-max.json";
     const MS_DAY = 24 * 60 * 60 * 1000;
     const CYCLE_ANCHOR_NUMBER = 148;
     const CYCLE_ANCHOR_START_UTC = Date.UTC(2026, 5, 16);
@@ -380,6 +383,7 @@
     const compactFmt = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
     let viewMode = "selected";
     let summaryCachePromise = null;
+    let dailyMaxCachePromise = null;
 
     function fmt(value, digits = 2) {
       if (value === null || value === undefined || value === "") return "-";
@@ -473,6 +477,22 @@
       return summaryCachePromise;
     }
 
+    async function loadDailyMaxCache() {
+      if (!dailyMaxCachePromise) {
+        dailyMaxCachePromise = fetch(DAILY_MAX_CACHE_URL, { cache: "no-store" })
+          .then(response => response.ok ? response.json() : null)
+          .catch(() => null);
+      }
+      return dailyMaxCachePromise;
+    }
+
+    async function dailyMaxFor(row) {
+      const cache = await loadDailyMaxCache();
+      const date = String(row.calculatedAt || "").slice(0, 10);
+      const day = cache?.days?.find(item => item.date === date && Number(item.cycleNumber) === Number(row.cycleNumber));
+      return day?.summaries?.find(summary => Number(summary.leagueId) === Number(row.leagueId)) || null;
+    }
+
     async function cachedSummaries(leagueId, cycleNumber) {
       const cache = await loadSummaryCache();
       const cycle = cache?.cycles?.find(item => Number(item.cycleNumber) === Number(cycleNumber));
@@ -511,8 +531,11 @@
       `;
     }
 
-    function renderRows(rows) {
-      $("cycleRows").innerHTML = rows.map(row => `
+    async function renderRows(rows) {
+      const maxRows = await Promise.all(rows.map(dailyMaxFor));
+      $("cycleRows").innerHTML = rows.map((row, index) => {
+        const maxRow = maxRows[index];
+        return `
         <tr>
           <td>${cycleLabel(row.cycleNumber, row.calculatedAt)}</td>
           <td>${escapeHtml(row.leagueName || `League ${row.leagueId}`)}</td>
@@ -520,11 +543,14 @@
           <td>${fmtBtc(row.btcFund)} BTC</td>
           <td>${fmtBlocks(row.blocks)}</td>
           <td>${fmtBtc(row.btcBlockSize)} BTC</td>
+          <td>${fmtBtc(maxRow?.maxBtcBlockSize)} BTC</td>
           <td>${compactFmt.format(Number(row.gmtFund || 0))} GMT</td>
           <td>${fmt(row.gmtBlockSize, 4)} GMT</td>
+          <td>${fmt(maxRow?.maxGmtBlockSize, 4)} GMT</td>
           <td>${fmt(row.weightedEnergyEfficiencyPerTh, 2)}</td>
         </tr>
-      `).join("");
+      `;
+      }).join("");
     }
 
     function setStatus(message, error = false) {
@@ -546,7 +572,7 @@
       const current = currentCycleNumber();
       button.disabled = true;
       setStatus("Loading cycle data...");
-      $("cycleRows").innerHTML = '<tr><td colspan="9" class="muted">Loading...</td></tr>';
+      $("cycleRows").innerHTML = '<tr><td colspan="11" class="muted">Loading...</td></tr>';
 
       try {
         if (viewMode === "selected") {
@@ -554,17 +580,17 @@
           const cycles = [current, current - 1];
           const groups = await Promise.all(cycles.map(cycle => fetchSummaries(leagueId, cycle)));
           const rows = groups.flat();
-          renderRows(rows);
+          await renderRows(rows);
           const leagueName = LEAGUES.get(leagueId) || `League ${leagueId}`;
           setStatus(`Loaded ${leagueName} cycles ${cycles.join(" and ")}.`);
         } else {
           const cycleNumber = Number.parseInt($("cycleNumber").value, 10) || current;
           const rows = await fetchSummaries("all", cycleNumber);
-          renderRows(rows);
+          await renderRows(rows);
           setStatus(`Loaded all leagues for cycle ${cycleNumber}.`);
         }
       } catch (error) {
-        $("cycleRows").innerHTML = '<tr><td colspan="9" class="muted">No data loaded.</td></tr>';
+        $("cycleRows").innerHTML = '<tr><td colspan="11" class="muted">No data loaded.</td></tr>';
         setStatus(error.message || "Could not load cycle data.", true);
       } finally {
         button.disabled = false;
