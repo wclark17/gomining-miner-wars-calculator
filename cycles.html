@@ -357,6 +357,7 @@
 
   <script>
     const SUMMARY_API = window.MINER_WARS_SUMMARY_API || "/api/miner-wars-cycle-summary";
+    const SUMMARY_CACHE_URL = window.MINER_WARS_SUMMARY_CACHE_URL || "data/miner-wars-cycle-summaries.json";
     const MS_DAY = 24 * 60 * 60 * 1000;
     const CYCLE_ANCHOR_NUMBER = 148;
     const CYCLE_ANCHOR_START_UTC = Date.UTC(2026, 5, 16);
@@ -378,6 +379,7 @@
     const integerFmt = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
     const compactFmt = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
     let viewMode = "selected";
+    let summaryCachePromise = null;
 
     function fmt(value, digits = 2) {
       if (value === null || value === undefined || value === "") return "-";
@@ -462,7 +464,30 @@
       $("cycleNumber").value = String(current);
     }
 
+    async function loadSummaryCache() {
+      if (!summaryCachePromise) {
+        summaryCachePromise = fetch(SUMMARY_CACHE_URL, { cache: "no-store" })
+          .then(response => response.ok ? response.json() : null)
+          .catch(() => null);
+      }
+      return summaryCachePromise;
+    }
+
+    async function cachedSummaries(leagueId, cycleNumber) {
+      if (cycleNumber === currentCycleNumber()) return null;
+      const cache = await loadSummaryCache();
+      const cycle = cache?.cycles?.find(item => Number(item.cycleNumber) === Number(cycleNumber));
+      if (!cycle || !Array.isArray(cycle.summaries)) return null;
+      const summaries = leagueId === "all"
+        ? cycle.summaries
+        : cycle.summaries.filter(summary => Number(summary.leagueId) === Number(leagueId));
+      if (!summaries.length) return null;
+      return summaries.map(summary => ({ ...summary, cycleNumber, calculatedAt: cycle.calculatedAt }));
+    }
+
     async function fetchSummaries(leagueId, cycleNumber) {
+      const cached = await cachedSummaries(leagueId, cycleNumber);
+      if (cached) return cached;
       const calculatedAt = cycleCalculatedAt(cycleNumber);
       const url = new URL(SUMMARY_API, window.location.href);
       url.searchParams.set("leagueId", String(leagueId));
