@@ -69,7 +69,10 @@ def cycle_bounds(cycle_number: int) -> tuple[datetime, datetime]:
     return start, end
 
 
-def cycle_calculated_at(cycle_number: int) -> str:
+def cycle_calculated_at(cycle_number: int, now: datetime | None = None) -> str:
+    now = now or datetime.now(timezone.utc)
+    if cycle_number >= current_cycle_number(now):
+        return iso_z(now)
     _start, end = cycle_bounds(cycle_number)
     return iso_z(datetime.fromtimestamp(end.timestamp() - 1, timezone.utc))
 

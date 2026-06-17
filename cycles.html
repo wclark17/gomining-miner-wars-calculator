@@ -474,7 +474,6 @@
     }
 
     async function cachedSummaries(leagueId, cycleNumber) {
-      if (cycleNumber === currentCycleNumber()) return null;
       const cache = await loadSummaryCache();
       const cycle = cache?.cycles?.find(item => Number(item.cycleNumber) === Number(cycleNumber));
       if (!cycle || !Array.isArray(cycle.summaries)) return null;
