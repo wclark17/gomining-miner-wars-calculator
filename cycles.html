@@ -545,18 +545,28 @@
         .sort((a, b) => Number(b.cycleNumber) - Number(a.cycleNumber));
     }
 
-    async function fetchSummaries(leagueId, cycleNumber) {
-      const cached = await cachedSummaries(leagueId, cycleNumber);
-      if (cached) return cached;
+    async function fetchSummaries(leagueId, cycleNumber, options = {}) {
+      const preferLive = Boolean(options.preferLive);
+      if (!preferLive) {
+        const cached = await cachedSummaries(leagueId, cycleNumber);
+        if (cached) return cached;
+      }
       const calculatedAt = cycleCalculatedAt(cycleNumber);
       const url = new URL(SUMMARY_API, window.location.href);
       url.searchParams.set("leagueId", String(leagueId));
       url.searchParams.set("calculatedAt", calculatedAt);
-      const response = await fetch(url.toString(), { cache: "no-store" });
-      if (!response.ok) throw new Error(`Cycle ${cycleNumber} returned ${response.status}`);
-      const payload = await response.json();
-      if (!payload || !Array.isArray(payload.summaries)) throw new Error(`Cycle ${cycleNumber} returned no summary data`);
-      return payload.summaries.map(summary => ({ ...summary, cycleNumber, calculatedAt }));
+      try {
+        const response = await fetch(url.toString(), { cache: "no-store" });
+        if (!response.ok) throw new Error(`Cycle ${cycleNumber} returned ${response.status}`);
+        const payload = await response.json();
+        if (!payload || !Array.isArray(payload.summaries)) throw new Error(`Cycle ${cycleNumber} returned no summary data`);
+        return payload.summaries.map(summary => ({ ...summary, cycleNumber, calculatedAt }));
+      } catch (error) {
+        if (!preferLive) throw error;
+        const cached = await cachedSummaries(leagueId, cycleNumber);
+        if (cached) return cached;
+        throw error;
+      }
     }
 
     function cycleLabel(cycleNumber, calculatedAt) {
@@ -623,6 +633,15 @@
         if (viewMode === "selected") {
           const leagueId = Number.parseInt($("leagueId").value, 10);
           let rows = await cachedCyclesForLeague(leagueId);
+          try {
+            const liveRows = await fetchSummaries(leagueId, current, { preferLive: true });
+            rows = [
+              ...liveRows,
+              ...rows.filter(row => Number(row.cycleNumber) !== Number(current))
+            ].sort((a, b) => Number(b.cycleNumber) - Number(a.cycleNumber));
+          } catch (_error) {
+            // Keep the cached current-cycle row when the live API is unavailable.
+          }
           if (!rows.length) {
             const cycles = [current, current - 1];
             const groups = await Promise.all(cycles.map(cycle => fetchSummaries(leagueId, cycle)));
@@ -630,10 +649,10 @@
           }
           await renderRows(rows);
           const leagueName = LEAGUES.get(leagueId) || `League ${leagueId}`;
-          setStatus(`Loaded ${rows.length} cached cycles for ${leagueName}.`);
+          setStatus(`Loaded ${rows.length} cycles for ${leagueName}.`);
         } else {
           const cycleNumber = Number.parseInt($("cycleNumber").value, 10) || current;
-          const rows = await fetchSummaries("all", cycleNumber);
+          const rows = await fetchSummaries("all", cycleNumber, { preferLive: cycleNumber === current });
           await renderRows(rows);
           setStatus(`Loaded all leagues for cycle ${cycleNumber}.`);
         }
