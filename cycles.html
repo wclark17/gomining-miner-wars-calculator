@@ -336,19 +336,18 @@
             <th>Cycle</th>
             <th>League</th>
             <th>League TH</th>
+            <th>Avg W/TH</th>
             <th>BTC Prize Pool</th>
             <th>Blocks</th>
             <th>BTC / Block</th>
             <th>Daily Max BTC / Block</th>
             <th>GMT Prize Pool</th>
             <th>GMT / Block</th>
-            <th>Daily Max GMT / Block</th>
-            <th>Avg W/TH</th>
           </tr>
         </thead>
         <tbody id="cycleRows">
           <tr>
-            <td colspan="11" class="muted">Loading...</td>
+            <td colspan="10" class="muted">Loading...</td>
           </tr>
         </tbody>
       </table>
@@ -576,7 +575,7 @@
     async function renderRows(rows) {
       const visibleRows = rows.filter(hasData);
       if (!visibleRows.length) {
-        $("cycleRows").innerHTML = '<tr><td colspan="11" class="muted">No cycle data available.</td></tr>';
+        $("cycleRows").innerHTML = '<tr><td colspan="10" class="muted">No cycle data available.</td></tr>';
         return;
       }
       const maxRows = await Promise.all(visibleRows.map(dailyMaxFor));
@@ -587,14 +586,13 @@
           <td>${cycleLabel(row.cycleNumber, row.calculatedAt)}</td>
           <td>${escapeHtml(row.leagueName || `League ${row.leagueId}`)}</td>
           <td>${fmt(row.totalPower, 2)}</td>
+          <td>${fmt(row.weightedEnergyEfficiencyPerTh, 2)}</td>
           <td>${fmtBtc(row.btcFund)} BTC</td>
           <td>${fmtBlocks(row.blocks)}</td>
           <td>${fmtBtc(row.btcBlockSize)} BTC</td>
           <td>${fmtBtc(maxRow?.maxBtcBlockSize)} BTC</td>
           <td>${compactFmt.format(Number(row.gmtFund || 0))} GMT</td>
           <td>${fmt(row.gmtBlockSize, 4)} GMT</td>
-          <td>${fmt(maxRow?.maxGmtBlockSize, 4)} GMT</td>
-          <td>${fmt(row.weightedEnergyEfficiencyPerTh, 2)}</td>
         </tr>
       `;
       }).join("");
@@ -619,7 +617,7 @@
       const current = currentCycleNumber();
       button.disabled = true;
       setStatus("Loading cycle data...");
-      $("cycleRows").innerHTML = '<tr><td colspan="11" class="muted">Loading...</td></tr>';
+      $("cycleRows").innerHTML = '<tr><td colspan="10" class="muted">Loading...</td></tr>';
 
       try {
         if (viewMode === "selected") {
@@ -640,7 +638,7 @@
           setStatus(`Loaded all leagues for cycle ${cycleNumber}.`);
         }
       } catch (error) {
-        $("cycleRows").innerHTML = '<tr><td colspan="11" class="muted">No data loaded.</td></tr>';
+        $("cycleRows").innerHTML = '<tr><td colspan="10" class="muted">No data loaded.</td></tr>';
         setStatus(error.message || "Could not load cycle data.", true);
       } finally {
         button.disabled = false;
