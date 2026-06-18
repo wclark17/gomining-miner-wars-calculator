@@ -569,6 +569,33 @@
       }
     }
 
+    async function mapWithLimit(values, limit, mapper) {
+      const results = new Array(values.length);
+      let next = 0;
+      const workers = Array.from({ length: Math.min(limit, values.length) }, async () => {
+        while (next < values.length) {
+          const index = next;
+          next += 1;
+          results[index] = await mapper(values[index]);
+        }
+      });
+      await Promise.all(workers);
+      return results;
+    }
+
+    async function fetchCurrentAllLeagueSummaries(cycleNumber) {
+      const groups = await mapWithLimit([...LEAGUES.keys()], 4, async leagueId => {
+        try {
+          return await fetchSummaries(leagueId, cycleNumber, { preferLive: true });
+        } catch (_error) {
+          return [];
+        }
+      });
+      const rows = groups.flat().filter(hasData);
+      if (rows.length) return rows;
+      return fetchSummaries("all", cycleNumber, { preferLive: true });
+    }
+
     function cycleLabel(cycleNumber, calculatedAt) {
       const isCurrent = cycleNumber === currentCycleNumber();
       const { start, end } = cycleBoundsForNumber(cycleNumber);
@@ -652,7 +679,9 @@
           setStatus(`Loaded ${rows.length} cycles for ${leagueName}.`);
         } else {
           const cycleNumber = Number.parseInt($("cycleNumber").value, 10) || current;
-          const rows = await fetchSummaries("all", cycleNumber, { preferLive: cycleNumber === current });
+          const rows = cycleNumber === current
+            ? await fetchCurrentAllLeagueSummaries(cycleNumber)
+            : await fetchSummaries("all", cycleNumber);
           await renderRows(rows);
           setStatus(`Loaded all leagues for cycle ${cycleNumber}.`);
         }
