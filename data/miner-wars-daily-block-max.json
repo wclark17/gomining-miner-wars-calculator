@@ -1728,22 +1728,22 @@
     },
     {
       "calculatedAtFirstSeen": "2026-06-21T00:00:10.949Z",
-      "calculatedAtLastSeen": "2026-06-21T02:50:12.818Z",
+      "calculatedAtLastSeen": "2026-06-21T03:00:10.776Z",
       "cycleNumber": 148,
       "date": "2026-06-21",
       "summaries": [
         {
-          "blocksAtMax": 1452.0,
+          "blocksAtMax": 1459.0,
           "btcFundAtMax": 4.498192186352275,
-          "gmtFundAtMax": 202625.40250251,
+          "gmtFundAtMax": 204053.24502486,
           "leagueId": 1,
           "leagueName": "Odyssey",
           "maxBtcBlockSize": 0.003110782978113607,
           "maxBtcBlockSizeAt": "2026-06-21T01:40:17.670Z",
-          "maxGmtBlockSize": 139.54917527721074,
-          "maxGmtBlockSizeAt": "2026-06-21T02:00:13.443Z",
-          "totalPowerAtMax": 1774333.45686492,
-          "weightedEnergyEfficiencyPerThAtMax": 19.744772174648265
+          "maxGmtBlockSize": 139.85828994164495,
+          "maxGmtBlockSizeAt": "2026-06-21T03:00:10.776Z",
+          "totalPowerAtMax": 1774557.1360649192,
+          "weightedEnergyEfficiencyPerThAtMax": 19.744682875264058
         },
         {
           "leagueId": 2,
@@ -1776,16 +1776,16 @@
           "weightedEnergyEfficiencyPerThAtMax": 18.91608433734924
         },
         {
-          "blocksAtMax": 1533.0,
+          "blocksAtMax": 1534.0,
           "btcFundAtMax": 0.11232910569598091,
-          "gmtFundAtMax": 2748.88575,
+          "gmtFundAtMax": 2752.2495,
           "leagueId": 5,
           "leagueName": "Dune I",
           "maxBtcBlockSize": 7.346573296009216e-05,
           "maxBtcBlockSizeAt": "2026-06-21T01:40:17.670Z",
-          "maxGmtBlockSize": 1.7931413894324852,
-          "maxGmtBlockSizeAt": "2026-06-21T02:50:12.818Z",
-          "totalPowerAtMax": 46885.43829999988,
+          "maxGmtBlockSize": 1.7941652542372881,
+          "maxGmtBlockSizeAt": "2026-06-21T03:00:10.776Z",
+          "totalPowerAtMax": 46885.43829999987,
           "weightedEnergyEfficiencyPerThAtMax": 17.242964028776935
         },
         {
@@ -1841,17 +1841,17 @@
           "weightedEnergyEfficiencyPerThAtMax": 17.522490013315515
         },
         {
-          "blocksAtMax": 1544.0,
+          "blocksAtMax": 1546.0,
           "btcFundAtMax": 0.10648397575352726,
-          "gmtFundAtMax": 6370.09425,
+          "gmtFundAtMax": 6379.1325,
           "leagueId": 10,
           "leagueName": "Dune VI",
           "maxBtcBlockSize": 6.937066824334024e-05,
           "maxBtcBlockSizeAt": "2026-06-21T01:40:17.670Z",
-          "maxGmtBlockSize": 4.125708711139897,
-          "maxGmtBlockSizeAt": "2026-06-21T02:50:12.818Z",
-          "totalPowerAtMax": 42604.041700000096,
-          "weightedEnergyEfficiencyPerThAtMax": 20.642739257812604
+          "maxGmtBlockSize": 4.12621765847348,
+          "maxGmtBlockSizeAt": "2026-06-21T03:00:10.776Z",
+          "totalPowerAtMax": 42604.0417000001,
+          "weightedEnergyEfficiencyPerThAtMax": 20.6427392578126
         },
         {
           "blocksAtMax": 1608.0,
@@ -2114,21 +2114,21 @@
           "weightedEnergyEfficiencyPerThAtMax": 17.066328903654448
         },
         {
-          "blocksAtMax": 1462.0,
+          "blocksAtMax": 1466.0,
           "btcFundAtMax": 0.10632971227058793,
-          "gmtFundAtMax": 4163.562,
+          "gmtFundAtMax": 4187.42025,
           "leagueId": 31,
           "leagueName": "Dune XXVII",
           "maxBtcBlockSize": 7.28285700483479e-05,
           "maxBtcBlockSizeAt": "2026-06-21T01:40:17.670Z",
-          "maxGmtBlockSize": 2.8478536251709987,
-          "maxGmtBlockSizeAt": "2026-06-21T02:00:13.443Z",
-          "totalPowerAtMax": 41507.798999999795,
+          "maxGmtBlockSize": 2.8563576057298774,
+          "maxGmtBlockSizeAt": "2026-06-21T03:00:10.776Z",
+          "totalPowerAtMax": 41351.47629999979,
           "weightedEnergyEfficiencyPerThAtMax": 17.918818272095262
         }
       ]
     }
   ],
-  "generatedAt": "2026-06-21T02:50:29.475Z",
+  "generatedAt": "2026-06-21T03:00:30.442Z",
   "source": "GoMining API daily max observations"
 }
