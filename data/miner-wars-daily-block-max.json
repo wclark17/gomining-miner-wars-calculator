@@ -2529,8 +2529,140 @@
           "weightedEnergyEfficiencyPerThAtMax": 17.926693147964176
         }
       ]
+    },
+    {
+      "calculatedAtFirstSeen": "2026-06-23T00:00:12.019Z",
+      "calculatedAtLastSeen": "2026-06-23T00:00:12.019Z",
+      "cycleNumber": 149,
+      "date": "2026-06-23",
+      "summaries": [
+        {
+          "leagueId": 1,
+          "leagueName": "Odyssey"
+        },
+        {
+          "leagueId": 2,
+          "leagueName": "League 2"
+        },
+        {
+          "leagueId": 3,
+          "leagueName": "Horizon"
+        },
+        {
+          "leagueId": 4,
+          "leagueName": "Eclipse"
+        },
+        {
+          "leagueId": 5,
+          "leagueName": "Dune I"
+        },
+        {
+          "leagueId": 6,
+          "leagueName": "Dune II"
+        },
+        {
+          "leagueId": 7,
+          "leagueName": "Dune III"
+        },
+        {
+          "leagueId": 8,
+          "leagueName": "Dune IV"
+        },
+        {
+          "leagueId": 9,
+          "leagueName": "Dune V"
+        },
+        {
+          "leagueId": 10,
+          "leagueName": "Dune VI"
+        },
+        {
+          "leagueId": 11,
+          "leagueName": "Dune VII"
+        },
+        {
+          "leagueId": 12,
+          "leagueName": "Dune VIII"
+        },
+        {
+          "leagueId": 13,
+          "leagueName": "Dune IX"
+        },
+        {
+          "leagueId": 14,
+          "leagueName": "Dune X"
+        },
+        {
+          "leagueId": 15,
+          "leagueName": "Dune XI"
+        },
+        {
+          "leagueId": 16,
+          "leagueName": "Dune XII"
+        },
+        {
+          "leagueId": 17,
+          "leagueName": "Dune XIII"
+        },
+        {
+          "leagueId": 18,
+          "leagueName": "Dune XIV"
+        },
+        {
+          "leagueId": 19,
+          "leagueName": "Dune XV"
+        },
+        {
+          "leagueId": 20,
+          "leagueName": "Dune XVI"
+        },
+        {
+          "leagueId": 21,
+          "leagueName": "Dune XVII"
+        },
+        {
+          "leagueId": 22,
+          "leagueName": "Dune XVIII"
+        },
+        {
+          "leagueId": 23,
+          "leagueName": "Dune XIX"
+        },
+        {
+          "leagueId": 24,
+          "leagueName": "Dune XX"
+        },
+        {
+          "leagueId": 25,
+          "leagueName": "Dune XXI"
+        },
+        {
+          "leagueId": 26,
+          "leagueName": "Dune XXII"
+        },
+        {
+          "leagueId": 27,
+          "leagueName": "Dune XXIII"
+        },
+        {
+          "leagueId": 28,
+          "leagueName": "Dune XXIV"
+        },
+        {
+          "leagueId": 29,
+          "leagueName": "Dune XXV"
+        },
+        {
+          "leagueId": 30,
+          "leagueName": "Dune XXVI"
+        },
+        {
+          "leagueId": 31,
+          "leagueName": "Dune XXVII"
+        }
+      ]
     }
   ],
-  "generatedAt": "2026-06-22T06:40:29.337Z",
+  "generatedAt": "2026-06-23T00:01:03.159Z",
   "source": "GoMining API daily max observations"
 }
