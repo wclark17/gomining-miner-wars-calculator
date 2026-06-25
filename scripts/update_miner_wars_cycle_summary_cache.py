@@ -242,7 +242,7 @@ def main() -> int:
         if "cycleNumber" in cycle
     }
 
-    cycles = {}
+    cycles = dict(existing_cycles)
     for cycle_number in range(args.start_cycle, args.end_cycle + 1):
         existing_cycle = existing_cycles.get(cycle_number)
         existing_ids = {int(summary["leagueId"]) for summary in existing_cycle.get("summaries", [])} if existing_cycle else set()
