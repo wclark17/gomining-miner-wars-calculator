@@ -3318,7 +3318,7 @@
     },
     {
       "calculatedAtFirstSeen": "2026-06-25T00:00:12.228Z",
-      "calculatedAtLastSeen": "2026-06-25T01:50:09.692Z",
+      "calculatedAtLastSeen": "2026-06-25T02:10:12.625Z",
       "cycleNumber": 149,
       "date": "2026-06-25",
       "summaries": [
@@ -3561,16 +3561,16 @@
           "weightedEnergyEfficiencyPerThAtMax": 17.47524377031411
         },
         {
-          "blocksAtMax": 644.0,
+          "blocksAtMax": 663.0,
           "btcFundAtMax": 0.04881341350357979,
-          "gmtFundAtMax": 932.334,
+          "gmtFundAtMax": 1012.44975,
           "leagueId": 20,
           "leagueName": "Dune XVI",
           "maxBtcBlockSize": 7.57972259372357e-05,
           "maxBtcBlockSizeAt": "2026-06-25T01:40:10.619Z",
-          "maxGmtBlockSize": 1.4893514376996804,
-          "maxGmtBlockSizeAt": "2026-06-25T00:00:12.228Z",
-          "totalPowerAtMax": 56278.18649999991,
+          "maxGmtBlockSize": 1.5270735294117648,
+          "maxGmtBlockSizeAt": "2026-06-25T02:10:12.625Z",
+          "totalPowerAtMax": 56278.186499999865,
           "weightedEnergyEfficiencyPerThAtMax": 20.12025741029637
         },
         {
@@ -3587,15 +3587,15 @@
           "weightedEnergyEfficiencyPerThAtMax": 17.5020651242502
         },
         {
-          "blocksAtMax": 636.0,
+          "blocksAtMax": 642.0,
           "btcFundAtMax": 0.043970786460905395,
-          "gmtFundAtMax": 1325.3565,
+          "gmtFundAtMax": 1367.964,
           "leagueId": 22,
           "leagueName": "Dune XVIII",
           "maxBtcBlockSize": 6.913645669953679e-05,
           "maxBtcBlockSizeAt": "2026-06-25T01:40:10.619Z",
-          "maxGmtBlockSize": 2.1205704,
-          "maxGmtBlockSizeAt": "2026-06-25T00:20:10.711Z",
+          "maxGmtBlockSize": 2.1307850467289717,
+          "maxGmtBlockSizeAt": "2026-06-25T02:10:12.625Z",
           "totalPowerAtMax": 44266.66599999985,
           "weightedEnergyEfficiencyPerThAtMax": 18.043532710280306
         },
@@ -3710,6 +3710,6 @@
       ]
     }
   ],
-  "generatedAt": "2026-06-25T01:50:25.252Z",
+  "generatedAt": "2026-06-25T02:10:38.069Z",
   "source": "GoMining API daily max observations"
 }
