@@ -8097,7 +8097,7 @@
     },
     {
       "calculatedAtFirstSeen": "2026-07-07T00:00:10.450Z",
-      "calculatedAtLastSeen": "2026-07-07T02:50:09.677Z",
+      "calculatedAtLastSeen": "2026-07-07T03:00:09.117Z",
       "cycleNumber": 151,
       "date": "2026-07-07",
       "summaries": [
@@ -8119,16 +8119,16 @@
           "leagueName": "League 2"
         },
         {
-          "blocksAtMax": 32.0,
+          "blocksAtMax": 36.0,
           "btcFundAtMax": 0.0,
-          "gmtFundAtMax": 881.7315,
+          "gmtFundAtMax": 1058.5575,
           "leagueId": 3,
           "leagueName": "Horizon",
           "maxBtcBlockSize": 0.0,
           "maxBtcBlockSizeAt": "2026-07-07T00:20:09.777Z",
-          "maxGmtBlockSize": 27.554109375,
-          "maxGmtBlockSizeAt": "2026-07-07T02:50:09.677Z",
-          "totalPowerAtMax": 352116.8923999999,
+          "maxGmtBlockSize": 29.404374999999998,
+          "maxGmtBlockSizeAt": "2026-07-07T03:00:09.117Z",
+          "totalPowerAtMax": 352116.89239999984,
           "weightedEnergyEfficiencyPerThAtMax": 19.542169781437867
         },
         {
@@ -8498,6 +8498,6 @@
       ]
     }
   ],
-  "generatedAt": "2026-07-07T02:50:26.144Z",
+  "generatedAt": "2026-07-07T03:00:23.883Z",
   "source": "GoMining API daily max observations"
 }
