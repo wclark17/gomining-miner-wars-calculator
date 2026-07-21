@@ -13725,7 +13725,7 @@
     },
     {
       "calculatedAtFirstSeen": "2026-07-21T00:00:09.862Z",
-      "calculatedAtLastSeen": "2026-07-21T03:50:09.885Z",
+      "calculatedAtLastSeen": "2026-07-21T04:00:09.831Z",
       "cycleNumber": 153,
       "date": "2026-07-21",
       "summaries": [
@@ -13838,30 +13838,30 @@
           "weightedEnergyEfficiencyPerThAtMax": 17.561429990069456
         },
         {
-          "blocksAtMax": 12.0,
+          "blocksAtMax": 42.0,
           "btcFundAtMax": 0.0,
-          "gmtFundAtMax": 2.23275,
+          "gmtFundAtMax": 41.379,
           "leagueId": 10,
           "leagueName": "Dune VI",
           "maxBtcBlockSize": 0.0,
           "maxBtcBlockSizeAt": "2026-07-21T00:30:11.111Z",
-          "maxGmtBlockSize": 0.1860625,
-          "maxGmtBlockSizeAt": "2026-07-21T02:00:11.679Z",
-          "totalPowerAtMax": 41180.05539999989,
-          "weightedEnergyEfficiencyPerThAtMax": 19.365194327730997
+          "maxGmtBlockSize": 0.9852142857142857,
+          "maxGmtBlockSizeAt": "2026-07-21T04:00:09.831Z",
+          "totalPowerAtMax": 41207.500699999895,
+          "weightedEnergyEfficiencyPerThAtMax": 19.381618344754784
         },
         {
-          "blocksAtMax": 16.0,
+          "blocksAtMax": 71.0,
           "btcFundAtMax": 0.0,
-          "gmtFundAtMax": 27.5145,
+          "gmtFundAtMax": 151.398,
           "leagueId": 11,
           "leagueName": "Dune VII",
           "maxBtcBlockSize": 0.0,
           "maxBtcBlockSizeAt": "2026-07-21T00:30:11.111Z",
-          "maxGmtBlockSize": 1.71965625,
-          "maxGmtBlockSizeAt": "2026-07-21T02:00:11.679Z",
-          "totalPowerAtMax": 48823.91269999992,
-          "weightedEnergyEfficiencyPerThAtMax": 19.04756790123459
+          "maxGmtBlockSize": 2.1323661971830985,
+          "maxGmtBlockSizeAt": "2026-07-21T04:00:09.831Z",
+          "totalPowerAtMax": 48833.043299999925,
+          "weightedEnergyEfficiencyPerThAtMax": 19.044836520666276
         },
         {
           "blocksAtMax": 11.0,
@@ -13942,17 +13942,17 @@
           "weightedEnergyEfficiencyPerThAtMax": 18.344282536151184
         },
         {
-          "blocksAtMax": 39.0,
+          "blocksAtMax": 109.0,
           "btcFundAtMax": 0.0,
-          "gmtFundAtMax": 45.6495,
+          "gmtFundAtMax": 181.1745,
           "leagueId": 18,
           "leagueName": "Dune XIV",
           "maxBtcBlockSize": 0.0,
           "maxBtcBlockSizeAt": "2026-07-21T00:30:11.111Z",
-          "maxGmtBlockSize": 1.1705,
-          "maxGmtBlockSizeAt": "2026-07-21T03:50:09.885Z",
-          "totalPowerAtMax": 39736.67409999958,
-          "weightedEnergyEfficiencyPerThAtMax": 18.46403256105197
+          "maxGmtBlockSize": 1.662151376146789,
+          "maxGmtBlockSizeAt": "2026-07-21T04:00:09.831Z",
+          "totalPowerAtMax": 39748.13329999957,
+          "weightedEnergyEfficiencyPerThAtMax": 18.461864831038792
         },
         {
           "blocksAtMax": 16.0,
@@ -14020,17 +14020,17 @@
           "weightedEnergyEfficiencyPerThAtMax": 20.828467014712846
         },
         {
-          "blocksAtMax": 12.0,
+          "blocksAtMax": 39.0,
           "btcFundAtMax": 0.0,
-          "gmtFundAtMax": 25.49625,
+          "gmtFundAtMax": 365.42025,
           "leagueId": 24,
           "leagueName": "Dune XX",
           "maxBtcBlockSize": 0.0,
           "maxBtcBlockSizeAt": "2026-07-21T00:30:11.111Z",
-          "maxGmtBlockSize": 2.1246875,
-          "maxGmtBlockSizeAt": "2026-07-21T02:00:11.679Z",
-          "totalPowerAtMax": 38598.441199999965,
-          "weightedEnergyEfficiencyPerThAtMax": 18.25514771709931
+          "maxGmtBlockSize": 9.36975,
+          "maxGmtBlockSizeAt": "2026-07-21T04:00:09.831Z",
+          "totalPowerAtMax": 37675.76789999996,
+          "weightedEnergyEfficiencyPerThAtMax": 18.258064516128968
         },
         {
           "blocksAtMax": 17.0,
@@ -14126,6 +14126,6 @@
       ]
     }
   ],
-  "generatedAt": "2026-07-21T03:50:24.040Z",
+  "generatedAt": "2026-07-21T04:00:27.181Z",
   "source": "GoMining API daily max observations"
 }
