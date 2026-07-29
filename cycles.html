@@ -545,6 +545,33 @@
         .sort((a, b) => Number(b.cycleNumber) - Number(a.cycleNumber));
     }
 
+    async function fillMissingRecentCyclesForLeague(leagueId, rows, current) {
+      const existing = new Set(rows.map(row => Number(row.cycleNumber)));
+      const firstRecentCycle = Math.max(CYCLE_ANCHOR_NUMBER, current - 52);
+      const missing = [];
+      for (let cycle = current - 1; cycle >= firstRecentCycle; cycle -= 1) {
+        if (!existing.has(cycle)) missing.push(cycle);
+      }
+      if (!missing.length) return rows;
+
+      const recovered = await mapWithLimit(missing, 3, async cycle => {
+        try {
+          return await fetchSummaries(leagueId, cycle);
+        } catch (_error) {
+          return [];
+        }
+      });
+      return [
+        ...rows,
+        ...recovered.flat()
+      ].filter((row, index, combined) => (
+        combined.findIndex(candidate => (
+          Number(candidate.cycleNumber) === Number(row.cycleNumber)
+          && Number(candidate.leagueId) === Number(row.leagueId)
+        )) === index
+      )).sort((a, b) => Number(b.cycleNumber) - Number(a.cycleNumber));
+    }
+
     async function fetchSummaries(leagueId, cycleNumber, options = {}) {
       const preferLive = Boolean(options.preferLive);
       if (!preferLive) {
@@ -669,6 +696,7 @@
           } catch (_error) {
             // Keep the cached current-cycle row when the live API is unavailable.
           }
+          rows = await fillMissingRecentCyclesForLeague(leagueId, rows, current);
           if (!rows.length) {
             const cycles = [current, current - 1];
             const groups = await Promise.all(cycles.map(cycle => fetchSummaries(leagueId, cycle)));
