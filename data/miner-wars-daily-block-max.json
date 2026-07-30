@@ -17343,7 +17343,7 @@
     },
     {
       "calculatedAtFirstSeen": "2026-07-30T00:00:11.915Z",
-      "calculatedAtLastSeen": "2026-07-30T01:20:14.486Z",
+      "calculatedAtLastSeen": "2026-07-30T01:30:10.101Z",
       "cycleNumber": 154,
       "date": "2026-07-30",
       "summaries": [
@@ -17469,17 +17469,17 @@
           "weightedEnergyEfficiencyPerThAtMax": 17.98592752372733
         },
         {
-          "blocksAtMax": 564.0,
+          "blocksAtMax": 625.0,
           "btcFundAtMax": 0.01979416604266102,
-          "gmtFundAtMax": 967.395,
+          "gmtFundAtMax": 1131.84825,
           "leagueId": 11,
           "leagueName": "Dune VII",
           "maxBtcBlockSize": 3.50960390827323e-05,
           "maxBtcBlockSizeAt": "2026-07-30T00:00:11.915Z",
-          "maxGmtBlockSize": 1.7152393617021275,
-          "maxGmtBlockSizeAt": "2026-07-30T00:00:11.915Z",
-          "totalPowerAtMax": 50730.85330000003,
-          "weightedEnergyEfficiencyPerThAtMax": 19.37362179487173
+          "maxGmtBlockSize": 1.8109572,
+          "maxGmtBlockSizeAt": "2026-07-30T01:30:10.101Z",
+          "totalPowerAtMax": 50757.03630000003,
+          "weightedEnergyEfficiencyPerThAtMax": 19.37017614091265
         },
         {
           "blocksAtMax": 519.0,
@@ -17744,6 +17744,6 @@
       ]
     }
   ],
-  "generatedAt": "2026-07-30T01:20:30.465Z",
+  "generatedAt": "2026-07-30T01:30:24.384Z",
   "source": "GoMining API daily max observations"
 }
