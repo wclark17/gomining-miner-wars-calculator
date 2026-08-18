@@ -25163,7 +25163,7 @@
     },
     {
       "calculatedAtFirstSeen": "2026-08-18T00:00:12.137Z",
-      "calculatedAtLastSeen": "2026-08-18T04:00:13.140Z",
+      "calculatedAtLastSeen": "2026-08-18T04:10:11.822Z",
       "cycleNumber": 157,
       "date": "2026-08-18",
       "summaries": [
@@ -25354,15 +25354,15 @@
           "weightedEnergyEfficiencyPerThAtMax": 16.58815485076701
         },
         {
-          "blocksAtMax": 26.0,
+          "blocksAtMax": 29.0,
           "btcFundAtMax": 0.0,
-          "gmtFundAtMax": 83.11875,
+          "gmtFundAtMax": 96.90525,
           "leagueId": 16,
           "leagueName": "Dune XII",
           "maxBtcBlockSize": 0.0,
           "maxBtcBlockSizeAt": "2026-08-18T00:20:11.340Z",
-          "maxGmtBlockSize": 3.1968750000000004,
-          "maxGmtBlockSizeAt": "2026-08-18T03:40:11.563Z",
+          "maxGmtBlockSize": 3.341560344827586,
+          "maxGmtBlockSizeAt": "2026-08-18T04:10:11.822Z",
           "totalPowerAtMax": 43153.818199999965,
           "weightedEnergyEfficiencyPerThAtMax": 17.683775324010643
         },
@@ -25536,15 +25536,15 @@
           "weightedEnergyEfficiencyPerThAtMax": 22.127804259610347
         },
         {
-          "blocksAtMax": 29.0,
+          "blocksAtMax": 32.0,
           "btcFundAtMax": 0.0,
-          "gmtFundAtMax": 84.357,
+          "gmtFundAtMax": 97.02225,
           "leagueId": 30,
           "leagueName": "Dune XXVI",
           "maxBtcBlockSize": 0.0,
           "maxBtcBlockSizeAt": "2026-08-18T00:20:11.340Z",
-          "maxGmtBlockSize": 2.9088620689655174,
-          "maxGmtBlockSizeAt": "2026-08-18T03:30:14.004Z",
+          "maxGmtBlockSize": 3.0319453125,
+          "maxGmtBlockSizeAt": "2026-08-18T04:10:11.822Z",
           "totalPowerAtMax": 46625.45689999983,
           "weightedEnergyEfficiencyPerThAtMax": 18.46306061406133
         },
@@ -25590,6 +25590,6 @@
       ]
     }
   ],
-  "generatedAt": "2026-08-18T04:00:31.560Z",
+  "generatedAt": "2026-08-18T04:10:29.701Z",
   "source": "GoMining API daily max observations"
 }
