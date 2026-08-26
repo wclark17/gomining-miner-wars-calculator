@@ -28574,22 +28574,22 @@
     },
     {
       "calculatedAtFirstSeen": "2026-08-26T00:00:11.337Z",
-      "calculatedAtLastSeen": "2026-08-26T06:00:12.799Z",
+      "calculatedAtLastSeen": "2026-08-26T06:10:14.269Z",
       "cycleNumber": 158,
       "date": "2026-08-26",
       "summaries": [
         {
-          "blocksAtMax": 318.0,
+          "blocksAtMax": 341.0,
           "btcFundAtMax": 0.9057987919259204,
-          "gmtFundAtMax": 89598.94221973,
+          "gmtFundAtMax": 98122.49420854,
           "leagueId": 1,
           "leagueName": "Odyssey",
           "maxBtcBlockSize": 0.0031560933516582594,
           "maxBtcBlockSizeAt": "2026-08-26T01:50:12.258Z",
-          "maxGmtBlockSize": 281.7576799362579,
-          "maxGmtBlockSizeAt": "2026-08-26T04:30:12.972Z",
-          "totalPowerAtMax": 1804691.3448650194,
-          "weightedEnergyEfficiencyPerThAtMax": 20.200833107096518
+          "maxGmtBlockSize": 287.74924987841644,
+          "maxGmtBlockSizeAt": "2026-08-26T06:10:14.269Z",
+          "totalPowerAtMax": 1809379.9320650192,
+          "weightedEnergyEfficiencyPerThAtMax": 20.19144053926756
         },
         {
           "leagueId": 2,
@@ -28988,6 +28988,6 @@
       ]
     }
   ],
-  "generatedAt": "2026-08-26T06:00:29.372Z",
+  "generatedAt": "2026-08-26T06:10:29.073Z",
   "source": "GoMining API daily max observations"
 }
