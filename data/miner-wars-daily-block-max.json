@@ -31064,7 +31064,7 @@
     },
     {
       "calculatedAtFirstSeen": "2026-09-01T00:00:12.461Z",
-      "calculatedAtLastSeen": "2026-09-01T03:00:15.793Z",
+      "calculatedAtLastSeen": "2026-09-01T03:30:13.696Z",
       "cycleNumber": 159,
       "date": "2026-09-01",
       "summaries": [
@@ -31333,28 +31333,28 @@
           "weightedEnergyEfficiencyPerThAtMax": 18.025231409996625
         },
         {
-          "blocksAtMax": 19.0,
+          "blocksAtMax": 29.0,
           "btcFundAtMax": 0.0,
-          "gmtFundAtMax": 91.2405,
+          "gmtFundAtMax": 139.464,
           "leagueId": 22,
           "leagueName": "Dune XVIII",
           "maxBtcBlockSize": 0.0,
           "maxBtcBlockSizeAt": "2026-09-01T00:40:39.714Z",
-          "maxGmtBlockSize": 4.802131578947368,
-          "maxGmtBlockSizeAt": "2026-09-01T02:00:13.328Z",
-          "totalPowerAtMax": 39987.32200000001,
-          "weightedEnergyEfficiencyPerThAtMax": 16.848336172774957
+          "maxGmtBlockSize": 4.809103448275862,
+          "maxGmtBlockSizeAt": "2026-09-01T03:30:13.696Z",
+          "totalPowerAtMax": 40001.2027,
+          "weightedEnergyEfficiencyPerThAtMax": 16.849422882252487
         },
         {
-          "blocksAtMax": 20.0,
+          "blocksAtMax": 21.0,
           "btcFundAtMax": 0.0,
-          "gmtFundAtMax": 6.50325,
+          "gmtFundAtMax": 9.867,
           "leagueId": 23,
           "leagueName": "Dune XIX",
           "maxBtcBlockSize": 0.0,
           "maxBtcBlockSizeAt": "2026-09-01T00:40:39.714Z",
-          "maxGmtBlockSize": 0.3251625,
-          "maxGmtBlockSizeAt": "2026-09-01T03:00:15.793Z",
+          "maxGmtBlockSize": 0.4698571428571429,
+          "maxGmtBlockSizeAt": "2026-09-01T03:30:13.696Z",
           "totalPowerAtMax": 54900.20587999974,
           "weightedEnergyEfficiencyPerThAtMax": 23.824933802062585
         },
@@ -31478,6 +31478,6 @@
       ]
     }
   ],
-  "generatedAt": "2026-09-01T03:00:31.874Z",
+  "generatedAt": "2026-09-01T03:30:29.794Z",
   "source": "GoMining API daily max observations"
 }
