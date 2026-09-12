@@ -35629,7 +35629,7 @@
     },
     {
       "calculatedAtFirstSeen": "2026-09-12T00:00:19.739Z",
-      "calculatedAtLastSeen": "2026-09-12T00:10:19.555Z",
+      "calculatedAtLastSeen": "2026-09-12T00:20:11.931Z",
       "cycleNumber": 160,
       "date": "2026-09-12",
       "summaries": [
@@ -35703,17 +35703,17 @@
           "weightedEnergyEfficiencyPerThAtMax": 17.020705464868573
         },
         {
-          "blocksAtMax": 1072.0,
+          "blocksAtMax": 1076.0,
           "btcFundAtMax": 0.07035181720273759,
-          "gmtFundAtMax": 1577.2575,
+          "gmtFundAtMax": 1591.9995,
           "leagueId": 7,
           "leagueName": "Dune III",
           "maxBtcBlockSize": 6.562669515180745e-05,
           "maxBtcBlockSizeAt": "2026-09-12T00:00:19.739Z",
-          "maxGmtBlockSize": 1.4713222947761193,
-          "maxGmtBlockSizeAt": "2026-09-12T00:00:19.739Z",
+          "maxGmtBlockSize": 1.47955343866171,
+          "maxGmtBlockSizeAt": "2026-09-12T00:20:11.931Z",
           "totalPowerAtMax": 48377.98112000002,
-          "weightedEnergyEfficiencyPerThAtMax": 20.0894471268089
+          "weightedEnergyEfficiencyPerThAtMax": 20.089447126808913
         },
         {
           "blocksAtMax": 1197.0,
@@ -35768,17 +35768,17 @@
           "weightedEnergyEfficiencyPerThAtMax": 18.23319447862096
         },
         {
-          "blocksAtMax": 1332.0,
+          "blocksAtMax": 1340.0,
           "btcFundAtMax": 0.06478844322820945,
-          "gmtFundAtMax": 10700.36175,
+          "gmtFundAtMax": 10951.1805,
           "leagueId": 12,
           "leagueName": "Dune VIII",
           "maxBtcBlockSize": 4.863997239355064e-05,
           "maxBtcBlockSizeAt": "2026-09-12T00:00:19.739Z",
-          "maxGmtBlockSize": 8.033304617117118,
-          "maxGmtBlockSizeAt": "2026-09-12T00:00:19.739Z",
+          "maxGmtBlockSize": 8.17252276119403,
+          "maxGmtBlockSizeAt": "2026-09-12T00:20:11.931Z",
           "totalPowerAtMax": 44483.516199999955,
-          "weightedEnergyEfficiencyPerThAtMax": 16.398154525226147
+          "weightedEnergyEfficiencyPerThAtMax": 16.39815452522615
         },
         {
           "blocksAtMax": 1095.0,
@@ -35833,15 +35833,15 @@
           "weightedEnergyEfficiencyPerThAtMax": 17.833037571810966
         },
         {
-          "blocksAtMax": 1097.0,
+          "blocksAtMax": 1101.0,
           "btcFundAtMax": 0.07314137339081282,
-          "gmtFundAtMax": 5620.5825,
+          "gmtFundAtMax": 5648.7015,
           "leagueId": 17,
           "leagueName": "Dune XIII",
           "maxBtcBlockSize": 6.667399579837085e-05,
           "maxBtcBlockSizeAt": "2026-09-12T00:00:19.739Z",
-          "maxGmtBlockSize": 5.123593892433911,
-          "maxGmtBlockSizeAt": "2026-09-12T00:00:19.739Z",
+          "maxGmtBlockSize": 5.130519073569483,
+          "maxGmtBlockSizeAt": "2026-09-12T00:20:11.931Z",
           "totalPowerAtMax": 50555.880299999815,
           "weightedEnergyEfficiencyPerThAtMax": 18.132131308472182
         },
@@ -35898,30 +35898,30 @@
           "weightedEnergyEfficiencyPerThAtMax": 16.486491981639862
         },
         {
-          "blocksAtMax": 1220.0,
+          "blocksAtMax": 1221.0,
           "btcFundAtMax": 0.07087314995056243,
-          "gmtFundAtMax": 4681.833,
+          "gmtFundAtMax": 4686.903,
           "leagueId": 22,
           "leagueName": "Dune XVIII",
           "maxBtcBlockSize": 5.8092745861116744e-05,
           "maxBtcBlockSizeAt": "2026-09-12T00:00:19.739Z",
-          "maxGmtBlockSize": 3.837568032786885,
-          "maxGmtBlockSizeAt": "2026-09-12T00:00:19.739Z",
+          "maxGmtBlockSize": 3.8385773955773956,
+          "maxGmtBlockSizeAt": "2026-09-12T00:20:11.931Z",
           "totalPowerAtMax": 47847.51369999993,
           "weightedEnergyEfficiencyPerThAtMax": 20.332855819235654
         },
         {
-          "blocksAtMax": 1389.0,
+          "blocksAtMax": 1390.0,
           "btcFundAtMax": 0.06527459306313559,
-          "gmtFundAtMax": 2134.96725,
+          "gmtFundAtMax": 2139.696,
           "leagueId": 23,
           "leagueName": "Dune XIX",
           "maxBtcBlockSize": 4.699394748965845e-05,
           "maxBtcBlockSizeAt": "2026-09-12T00:00:19.739Z",
-          "maxGmtBlockSize": 1.5370534557235422,
-          "maxGmtBlockSizeAt": "2026-09-12T00:00:19.739Z",
+          "maxGmtBlockSize": 1.5393496402877698,
+          "maxGmtBlockSizeAt": "2026-09-12T00:20:11.931Z",
           "totalPowerAtMax": 44377.6240999997,
-          "weightedEnergyEfficiencyPerThAtMax": 18.16035635195273
+          "weightedEnergyEfficiencyPerThAtMax": 18.160356351952732
         },
         {
           "blocksAtMax": 1212.0,
@@ -35963,16 +35963,16 @@
           "weightedEnergyEfficiencyPerThAtMax": 16.93808855807358
         },
         {
-          "blocksAtMax": 1021.0,
+          "blocksAtMax": 1025.0,
           "btcFundAtMax": 0.07255254566666254,
-          "gmtFundAtMax": 2685.49125,
+          "gmtFundAtMax": 2724.27675,
           "leagueId": 27,
           "leagueName": "Dune XXIII",
           "maxBtcBlockSize": 7.106027979105048e-05,
           "maxBtcBlockSizeAt": "2026-09-12T00:00:19.739Z",
-          "maxGmtBlockSize": 2.630255876591577,
-          "maxGmtBlockSizeAt": "2026-09-12T00:00:19.739Z",
-          "totalPowerAtMax": 51755.267399999735,
+          "maxGmtBlockSize": 2.6578309756097562,
+          "maxGmtBlockSizeAt": "2026-09-12T00:20:11.931Z",
+          "totalPowerAtMax": 51755.26739999973,
           "weightedEnergyEfficiencyPerThAtMax": 17.265920417039627
         },
         {
@@ -36015,17 +36015,17 @@
           "weightedEnergyEfficiencyPerThAtMax": 19.672523443942698
         },
         {
-          "blocksAtMax": 1097.0,
+          "blocksAtMax": 1098.0,
           "btcFundAtMax": 0.08918408444732437,
-          "gmtFundAtMax": 4344.3855,
+          "gmtFundAtMax": 4354.3305,
           "leagueId": 31,
           "leagueName": "Dune XXVII",
           "maxBtcBlockSize": 8.129816266848165e-05,
           "maxBtcBlockSizeAt": "2026-09-12T00:00:19.739Z",
-          "maxGmtBlockSize": 3.960242023701003,
-          "maxGmtBlockSizeAt": "2026-09-12T00:00:19.739Z",
-          "totalPowerAtMax": 62378.204499999934,
-          "weightedEnergyEfficiencyPerThAtMax": 18.820970132059532
+          "maxGmtBlockSize": 3.9656926229508196,
+          "maxGmtBlockSizeAt": "2026-09-12T00:20:11.931Z",
+          "totalPowerAtMax": 62378.20449999995,
+          "weightedEnergyEfficiencyPerThAtMax": 18.82097013205953
         },
         {
           "blocksAtMax": 1100.0,
@@ -36043,6 +36043,6 @@
       ]
     }
   ],
-  "generatedAt": "2026-09-12T00:10:34.734Z",
+  "generatedAt": "2026-09-12T00:20:28.303Z",
   "source": "GoMining API daily max observations"
 }
