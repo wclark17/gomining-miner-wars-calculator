@@ -36874,7 +36874,7 @@
     },
     {
       "calculatedAtFirstSeen": "2026-09-15T00:00:11.228Z",
-      "calculatedAtLastSeen": "2026-09-15T06:10:11.163Z",
+      "calculatedAtLastSeen": "2026-09-15T06:40:12.945Z",
       "cycleNumber": 161,
       "date": "2026-09-15",
       "summaries": [
@@ -36989,13 +36989,13 @@
         {
           "blocksAtMax": 83.0,
           "btcFundAtMax": 0.0,
-          "gmtFundAtMax": 240.21075,
+          "gmtFundAtMax": 330.252,
           "leagueId": 10,
           "leagueName": "Dune VI",
           "maxBtcBlockSize": 0.0,
           "maxBtcBlockSizeAt": "2026-09-15T00:10:14.404Z",
-          "maxGmtBlockSize": 2.894105421686747,
-          "maxGmtBlockSizeAt": "2026-09-15T06:10:11.163Z",
+          "maxGmtBlockSize": 3.9789397590361446,
+          "maxGmtBlockSizeAt": "2026-09-15T06:40:12.945Z",
           "totalPowerAtMax": 44778.18830000008,
           "weightedEnergyEfficiencyPerThAtMax": 18.442480699537246
         },
@@ -37247,17 +37247,17 @@
           "weightedEnergyEfficiencyPerThAtMax": 17.82322004711601
         },
         {
-          "blocksAtMax": 125.0,
+          "blocksAtMax": 126.0,
           "btcFundAtMax": 0.0,
-          "gmtFundAtMax": 404.4885,
+          "gmtFundAtMax": 408.0375,
           "leagueId": 30,
           "leagueName": "Dune XXVI",
           "maxBtcBlockSize": 0.0,
           "maxBtcBlockSizeAt": "2026-09-15T00:20:14.093Z",
-          "maxGmtBlockSize": 3.235908,
-          "maxGmtBlockSizeAt": "2026-09-15T06:10:11.163Z",
+          "maxGmtBlockSize": 3.2383928571428573,
+          "maxGmtBlockSizeAt": "2026-09-15T06:40:12.945Z",
           "totalPowerAtMax": 41845.701199999894,
-          "weightedEnergyEfficiencyPerThAtMax": 16.949222142154024
+          "weightedEnergyEfficiencyPerThAtMax": 16.949222142154028
         },
         {
           "blocksAtMax": 45.0,
@@ -37301,6 +37301,6 @@
       ]
     }
   ],
-  "generatedAt": "2026-09-15T06:10:28.593Z",
+  "generatedAt": "2026-09-15T06:40:29.284Z",
   "source": "GoMining API daily max observations"
 }
