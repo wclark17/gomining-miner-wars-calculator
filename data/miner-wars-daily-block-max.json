@@ -37302,7 +37302,7 @@
     },
     {
       "calculatedAtFirstSeen": "2026-09-16T00:00:10.959Z",
-      "calculatedAtLastSeen": "2026-09-16T02:10:12.082Z",
+      "calculatedAtLastSeen": "2026-09-16T02:20:11.424Z",
       "cycleNumber": 161,
       "date": "2026-09-16",
       "summaries": [
@@ -37454,15 +37454,15 @@
           "weightedEnergyEfficiencyPerThAtMax": 17.891958671287135
         },
         {
-          "blocksAtMax": 355.0,
+          "blocksAtMax": 356.0,
           "btcFundAtMax": 0.0,
-          "gmtFundAtMax": 3170.18325,
+          "gmtFundAtMax": 3182.4195,
           "leagueId": 13,
           "leagueName": "Dune IX",
           "maxBtcBlockSize": 0.0,
           "maxBtcBlockSizeAt": "2026-09-16T00:00:10.959Z",
-          "maxGmtBlockSize": 8.930093661971831,
-          "maxGmtBlockSizeAt": "2026-09-16T01:50:12.000Z",
+          "maxGmtBlockSize": 8.939380617977529,
+          "maxGmtBlockSizeAt": "2026-09-16T02:20:11.424Z",
           "totalPowerAtMax": 40808.976599999995,
           "weightedEnergyEfficiencyPerThAtMax": 16.353189554378577
         },
@@ -37688,15 +37688,15 @@
           "weightedEnergyEfficiencyPerThAtMax": 16.69982050777514
         },
         {
-          "blocksAtMax": 407.0,
+          "blocksAtMax": 408.0,
           "btcFundAtMax": 0.0,
-          "gmtFundAtMax": 1734.486,
+          "gmtFundAtMax": 1743.81675,
           "leagueId": 31,
           "leagueName": "Dune XXVII",
           "maxBtcBlockSize": 0.0,
           "maxBtcBlockSizeAt": "2026-09-16T00:00:10.959Z",
-          "maxGmtBlockSize": 4.261636363636364,
-          "maxGmtBlockSizeAt": "2026-09-16T01:50:12.000Z",
+          "maxGmtBlockSize": 4.274060661764706,
+          "maxGmtBlockSizeAt": "2026-09-16T02:20:11.424Z",
           "totalPowerAtMax": 45857.406399999956,
           "weightedEnergyEfficiencyPerThAtMax": 16.562520321908135
         },
@@ -37729,6 +37729,6 @@
       ]
     }
   ],
-  "generatedAt": "2026-09-16T02:10:36.291Z",
+  "generatedAt": "2026-09-16T02:20:29.161Z",
   "source": "GoMining API daily max observations"
 }
