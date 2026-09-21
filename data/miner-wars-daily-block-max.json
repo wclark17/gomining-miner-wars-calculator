@@ -39442,7 +39442,7 @@
     },
     {
       "calculatedAtFirstSeen": "2026-09-21T00:00:13.179Z",
-      "calculatedAtLastSeen": "2026-09-21T03:20:11.503Z",
+      "calculatedAtLastSeen": "2026-09-21T03:30:11.798Z",
       "cycleNumber": 161,
       "date": "2026-09-21",
       "summaries": [
@@ -39477,17 +39477,17 @@
           "weightedEnergyEfficiencyPerThAtMax": 17.212784098355648
         },
         {
-          "blocksAtMax": 1775.0,
+          "blocksAtMax": 1794.0,
           "btcFundAtMax": 1.0771185531904053,
-          "gmtFundAtMax": 137450.976,
+          "gmtFundAtMax": 138950.292,
           "leagueId": 4,
           "leagueName": "Eclipse",
           "maxBtcBlockSize": 0.0006068273539100874,
           "maxBtcBlockSizeAt": "2026-09-21T02:00:13.475Z",
-          "maxGmtBlockSize": 77.43716957746479,
-          "maxGmtBlockSizeAt": "2026-09-21T02:00:13.475Z",
-          "totalPowerAtMax": 368402.96600000194,
-          "weightedEnergyEfficiencyPerThAtMax": 15.922327334690767
+          "maxGmtBlockSize": 77.45278260869564,
+          "maxGmtBlockSizeAt": "2026-09-21T03:30:11.798Z",
+          "totalPowerAtMax": 368412.88120000187,
+          "weightedEnergyEfficiencyPerThAtMax": 15.922280821648302
         },
         {
           "blocksAtMax": 1644.0,
@@ -39869,6 +39869,6 @@
       ]
     }
   ],
-  "generatedAt": "2026-09-21T03:20:29.388Z",
+  "generatedAt": "2026-09-21T03:30:28.717Z",
   "source": "GoMining API daily max observations"
 }
