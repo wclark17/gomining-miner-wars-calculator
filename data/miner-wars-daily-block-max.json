@@ -39870,7 +39870,7 @@
     },
     {
       "calculatedAtFirstSeen": "2026-09-22T00:00:13.916Z",
-      "calculatedAtLastSeen": "2026-09-22T04:00:14.373Z",
+      "calculatedAtLastSeen": "2026-09-22T04:20:13.311Z",
       "cycleNumber": 162,
       "date": "2026-09-22",
       "summaries": [
@@ -40035,15 +40035,15 @@
           "weightedEnergyEfficiencyPerThAtMax": 16.967428020813692
         },
         {
-          "blocksAtMax": 38.0,
+          "blocksAtMax": 39.0,
           "btcFundAtMax": 0.0,
-          "gmtFundAtMax": 65.442,
+          "gmtFundAtMax": 70.668,
           "leagueId": 14,
           "leagueName": "Dune X",
           "maxBtcBlockSize": 0.0,
           "maxBtcBlockSizeAt": "2026-09-22T00:30:15.375Z",
-          "maxGmtBlockSize": 1.7221578947368419,
-          "maxGmtBlockSizeAt": "2026-09-22T04:00:14.373Z",
+          "maxGmtBlockSize": 1.812,
+          "maxGmtBlockSizeAt": "2026-09-22T04:20:13.311Z",
           "totalPowerAtMax": 42889.1954999999,
           "weightedEnergyEfficiencyPerThAtMax": 17.99635214959912
         },
@@ -40087,15 +40087,15 @@
           "weightedEnergyEfficiencyPerThAtMax": 17.71373138061686
         },
         {
-          "blocksAtMax": 37.0,
+          "blocksAtMax": 38.0,
           "btcFundAtMax": 0.0,
-          "gmtFundAtMax": 67.782,
+          "gmtFundAtMax": 136.5195,
           "leagueId": 18,
           "leagueName": "Dune XIV",
           "maxBtcBlockSize": 0.0,
           "maxBtcBlockSizeAt": "2026-09-22T00:30:15.375Z",
-          "maxGmtBlockSize": 1.831945945945946,
-          "maxGmtBlockSizeAt": "2026-09-22T04:00:14.373Z",
+          "maxGmtBlockSize": 3.5926184210526313,
+          "maxGmtBlockSizeAt": "2026-09-22T04:20:13.311Z",
           "totalPowerAtMax": 45313.17029999984,
           "weightedEnergyEfficiencyPerThAtMax": 18.821250865755538
         },
@@ -40297,6 +40297,6 @@
       ]
     }
   ],
-  "generatedAt": "2026-09-22T04:00:34.236Z",
+  "generatedAt": "2026-09-22T04:20:30.653Z",
   "source": "GoMining API daily max observations"
 }
