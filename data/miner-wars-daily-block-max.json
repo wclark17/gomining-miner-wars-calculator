@@ -43722,7 +43722,7 @@
     },
     {
       "calculatedAtFirstSeen": "2026-10-01T00:00:24.554Z",
-      "calculatedAtLastSeen": "2026-10-01T06:00:23.895Z",
+      "calculatedAtLastSeen": "2026-10-01T06:10:37.346Z",
       "cycleNumber": 163,
       "date": "2026-10-01",
       "summaries": [
@@ -43861,30 +43861,30 @@
           "weightedEnergyEfficiencyPerThAtMax": 16.462836391950756
         },
         {
-          "blocksAtMax": 832.0,
+          "blocksAtMax": 833.0,
           "btcFundAtMax": 0.04565213215625453,
-          "gmtFundAtMax": 3743.844,
+          "gmtFundAtMax": 3748.8555,
           "leagueId": 12,
           "leagueName": "Dune VIII",
           "maxBtcBlockSize": 5.944288041178975e-05,
           "maxBtcBlockSizeAt": "2026-10-01T03:14:19.425Z",
-          "maxGmtBlockSize": 4.4998125,
-          "maxGmtBlockSizeAt": "2026-10-01T06:00:23.895Z",
+          "maxGmtBlockSize": 4.500426770708284,
+          "maxGmtBlockSizeAt": "2026-10-01T06:10:37.346Z",
           "totalPowerAtMax": 49106.348400000046,
           "weightedEnergyEfficiencyPerThAtMax": 17.40876247768402
         },
         {
-          "blocksAtMax": 745.0,
+          "blocksAtMax": 782.0,
           "btcFundAtMax": 0.042395439090226,
-          "gmtFundAtMax": 3093.6165,
+          "gmtFundAtMax": 3298.45425,
           "leagueId": 13,
           "leagueName": "Dune IX",
           "maxBtcBlockSize": 5.729113390571081e-05,
           "maxBtcBlockSizeAt": "2026-10-01T03:14:19.425Z",
-          "maxGmtBlockSize": 4.152505369127517,
-          "maxGmtBlockSizeAt": "2026-10-01T03:20:20.500Z",
-          "totalPowerAtMax": 44281.438899999914,
-          "weightedEnergyEfficiencyPerThAtMax": 19.164120244882174
+          "maxGmtBlockSize": 4.217972186700767,
+          "maxGmtBlockSizeAt": "2026-10-01T06:10:37.346Z",
+          "totalPowerAtMax": 44279.43249999992,
+          "weightedEnergyEfficiencyPerThAtMax": 19.16430893047246
         },
         {
           "blocksAtMax": 870.0,
@@ -43939,17 +43939,17 @@
           "weightedEnergyEfficiencyPerThAtMax": 17.466024150777823
         },
         {
-          "blocksAtMax": 835.0,
+          "blocksAtMax": 847.0,
           "btcFundAtMax": 0.04534684327279475,
-          "gmtFundAtMax": 3706.35525,
+          "gmtFundAtMax": 3765.14775,
           "leagueId": 18,
           "leagueName": "Dune XIV",
           "maxBtcBlockSize": 5.63314823264531e-05,
           "maxBtcBlockSizeAt": "2026-10-01T03:14:19.425Z",
-          "maxGmtBlockSize": 4.438748802395209,
-          "maxGmtBlockSizeAt": "2026-10-01T05:30:24.960Z",
-          "totalPowerAtMax": 52779.906300000104,
-          "weightedEnergyEfficiencyPerThAtMax": 17.6460170207994
+          "maxGmtBlockSize": 4.44527479338843,
+          "maxGmtBlockSizeAt": "2026-10-01T06:10:37.346Z",
+          "totalPowerAtMax": 52507.9764000001,
+          "weightedEnergyEfficiencyPerThAtMax": 17.603840714855604
         },
         {
           "blocksAtMax": 727.0,
@@ -44134,21 +44134,21 @@
           "weightedEnergyEfficiencyPerThAtMax": 20.03612877637669
         },
         {
-          "blocksAtMax": 833.0,
+          "blocksAtMax": 866.0,
           "btcFundAtMax": 0.050476387691270386,
-          "gmtFundAtMax": 2541.006,
+          "gmtFundAtMax": 2652.65325,
           "leagueId": 33,
           "leagueName": "Dune XXIX",
           "maxBtcBlockSize": 6.059590359096085e-05,
           "maxBtcBlockSizeAt": "2026-10-01T03:14:19.425Z",
-          "maxGmtBlockSize": 3.050427370948379,
-          "maxGmtBlockSizeAt": "2026-10-01T03:14:19.425Z",
-          "totalPowerAtMax": 54162.62700000004,
-          "weightedEnergyEfficiencyPerThAtMax": 21.98959729436681
+          "maxGmtBlockSize": 3.0631099884526556,
+          "maxGmtBlockSizeAt": "2026-10-01T06:10:37.346Z",
+          "totalPowerAtMax": 54165.82310000004,
+          "weightedEnergyEfficiencyPerThAtMax": 21.9891181906917
         }
       ]
     }
   ],
-  "generatedAt": "2026-10-01T06:01:00.684Z",
+  "generatedAt": "2026-10-01T06:10:54.653Z",
   "source": "GoMining API daily max observations"
 }
