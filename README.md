@@ -1,5 +1,9 @@
 # GoMining Miner Wars Calculator
 
+> **Archived October 6, 2026.** The public pages and live data refresh jobs have
+> been retired. This repository preserves the calculator, cycle history, data
+> snapshots, and supporting scripts as a read-only historical archive.
+
 Static Miner Wars vs solo mining calculator for Tuesday-to-Tuesday UTC cycles.
 
 ## Cloudflare Pages
